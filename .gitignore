@@ -1,0 +1,22 @@
+# Ignore the pipenv virtual environment directory
+.venv/
+
+# Ignore environment files that may contain sensitive information
+.env
+.flaskenv
+
+# Byte-compiled Python files
+__pycache__/
+*.py[cod]
+
+# macOS specific files (if you are on macOS)
+.DS_Store
+
+# PyCharm specific files (for PyCharm projects)
+.idea/
+
+# Ignore log files and other local development artifacts
+*.log
+
+# Ignore the virtual environment libraries if created globally
+venv/
