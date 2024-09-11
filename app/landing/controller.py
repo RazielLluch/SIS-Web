@@ -4,9 +4,12 @@ from . import landing_bp
 # from app.user.forms import UserForm
 
 
+
 @landing_bp.route('/home/username')
+@landing_bp.route('/home/')
 @landing_bp.route('/<username>')
-def index(username=""):
+@landing_bp.route('/')
+def index(username="user"):
     return render_template('index.html',data = username,title='Home',something='something')
 
 # @landing_bp.route('/user/register', methods=['POST','GET'])
