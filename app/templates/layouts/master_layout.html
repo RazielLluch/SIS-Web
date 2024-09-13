@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Landing Page{% endblock %}</title>
+
+    <!-- Block for styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% block styles %}
+    <!-- Additional styles for child templates can be added here -->
+    {% endblock %}
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Students</a></li>
+                <li><a href="#">Courses</a></li>
+                <li><a href="#">Colleges</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="title">
+    <div class="overlay"></div>
+    <div class="content">
+        <h1 title="Title">{% block header_title %}Student Information System{% endblock %}</h1>
+        <p>{% block subtitle %}CCC181{% endblock %}</p>
+        <div class="buttons">
+            <button class="btn about">About Me</button>
+            <button class="btn get-started">Get Started</button>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    {% block features %}{% endblock %}
+</section>
+
+<section class="gallery">
+    {% block gallery %}{% endblock %}
+</section>
+
+<section class="footer">
+    <p>© 2024 Your Website</p>
+</section>
+
+<!-- Block for scripts -->
+{% block scripts %}
+<!-- Additional scripts for child templates can be added here -->
+{% endblock %}
+
+</body>
+</html>
