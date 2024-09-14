@@ -13,7 +13,7 @@ def index(username="user"):
 
 @landing_bp.route('/')
 def landing():
-    return render_template('layouts/master_layout.html',title='Home',something='something')
+    return render_template('landing/landing.html',title='Home',something='something')
 # @landing_bp.route('/user/register', methods=['POST','GET'])
 # def register():
 #     form = UserForm(request.form)
