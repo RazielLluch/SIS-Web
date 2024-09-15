@@ -6,10 +6,8 @@
     <title>{% block title %}Landing Page{% endblock %}</title>
 
     <!-- Block for styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    {% block styles %}
-    <!-- Additional styles for child templates can be added here -->
-    {% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/master_layout.css') }}">
+    {% block extra_css %} {% endblock %}
 </head>
 <body>
 
