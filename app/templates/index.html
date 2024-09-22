@@ -1,6 +1,5 @@
 {% extends "./layouts/master_layout.html" %}
 
-{% block title %}Home{% endblock %}
 {% block extra_css %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
@@ -26,9 +25,5 @@
 
 <section class="gallery">
     {% block gallery %}{% endblock %}
-</section>
-
-<section class="footer">
-    <p>© 2024 Your Website</p>
 </section>
 {% endblock %}
