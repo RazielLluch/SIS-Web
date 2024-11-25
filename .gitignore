@@ -1,3 +1,6 @@
+# Undo files
+*.un~
+
 # IntelliJ IDEA
 *.iml
 .idea/
