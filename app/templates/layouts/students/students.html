@@ -1,0 +1,27 @@
+{% extends "./layouts/master_layout.html" %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/students.css') }}">
+
+{% endblock %}
+
+{% block content %}
+<table>
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Course</th>
+    <th>Year</th>
+    <th>Gender</th>
+  </tr>
+  </thead>
+  <tbody>
+    {% for student in students %}
+    {% include 'layouts/students/student_row.html' %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
