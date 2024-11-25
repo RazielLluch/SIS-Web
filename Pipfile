@@ -10,6 +10,9 @@ flask-bootstrap = "*"
 config = "*"
 flask-wtf = "*"
 python-dotenv = "*"
+flask-login = "*"
+mysql-connector-python = "*"
+python = "*"
 
 [dev-packages]
 
