@@ -13,7 +13,7 @@ body {
 
 /* Header styles */
 header {
-    background-color: #0582CA;
+    background-color: #1A1A40;
     padding: 15px;
 }
 
@@ -38,6 +38,7 @@ nav ul {
 }
 
 nav ul li{
+    color: #ffffff;
     padding-top: 4px;
     padding-bottom: 4px;
     padding-left: 12px;
@@ -49,8 +50,12 @@ nav ul li.selected{
     border-radius: 5px;
 }
 
-nav a {
+nav ul li.selected a{
     color: black;
+}
+
+nav a {
+    color: white;
     text-decoration: none;
     font-size: 1em;
 }
