@@ -8,7 +8,7 @@ from . import landing_bp
 @landing_bp.route('/home/')
 @landing_bp.route('/<username>')
 @landing_bp.route('/')
-def index(username="user"):
+def index():
     return render_template('index.html',title='Home',active_page='Landing')
 
 
