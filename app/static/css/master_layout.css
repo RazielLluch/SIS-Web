@@ -1,0 +1,90 @@
+/* Reset some default styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #00A6FB;
+    color: white;
+}
+
+/* Header styles */
+header {
+    background-color: #1A1A40;
+    padding: 15px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    margin-right: auto;
+}
+
+nav {
+    margin-right: 20px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+nav ul li{
+    color: #ffffff;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+nav ul li.selected{
+    background: #ffffff;
+    border-radius: 5px;
+}
+
+nav ul li.selected a{
+    color: black;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.options{
+    display: flex;
+    color: white;
+}
+
+.sign-in, .sign-out {
+    background-color: #fff;
+    color: #007bff;
+    border: 2px solid #fff;
+    padding: 4px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.sign-in{
+    outline: 1px solid #1A1A40;
+}
+
+.sign-out {
+    background-color: #1A1A40;
+    color: white;
+    border: none;
+}

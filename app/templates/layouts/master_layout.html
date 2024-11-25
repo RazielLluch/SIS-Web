@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Landing Page{% endblock %}</title>
+    <title>{% block title %}{{title}}{% endblock %}</title>
 
     <!-- Block for styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    {% block styles %}
-    <!-- Additional styles for child templates can be added here -->
-    {% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/master_layout.css') }}">
+    {% block extra_css %} {% endblock %}
 </head>
 <body>
 
@@ -20,13 +18,17 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Students</a></li>
-                <li><a href="#">Courses</a></li>
-                <li><a href="#">Colleges</a></li>
-                <li><a href="#">About</a></li>
+                <li class="{% if self.title() == 'Home' %}selected{% endif %}"><a href="#">Home</a></li>
+                <li class="{% if self.title() == 'Students' %}selected{% endif %}"><a href="#">Students</a></li>
+                <li class="{% if self.title() == 'Courses' %}selected{% endif %}"><a href="#">Courses</a></li>
+                <li class="{% if self.title() == 'Colleges' %}selected{% endif %}"><a href="#">Colleges</a></li>
+                <li class="{% if self.title() == 'About' %}selected{% endif %}"><a href="#">About</a></li>
             </ul>
         </nav>
+        <div class="auth-buttons">
+            <button class="sign-in">Sign in</button>
+            <button class="sign-out">Sign out</button>
+        </div>
     </div>
 </header>
 
@@ -38,6 +40,12 @@
 {% block scripts %}
 <!-- Additional scripts for child templates can be added here -->
 {% endblock %}
+
+<footer>
+    <div class="container">
+
+    </div>
+</footer>
 
 </body>
 </html>

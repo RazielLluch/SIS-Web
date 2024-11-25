@@ -1,12 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{title}}</title>
-</head>
-<body>
+{% extends "./layouts/master_layout.html" %}
 
-    <h1>Hello, {{data}}!</h1>
+{% block extra_css %}
 
-</body>
-</html>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+
+{% endblock %}
+
+{% block content %}
+<section class="title">
+    <div class="overlay"></div>
+    <div class="content">
+        <h1 title="Title">{% block header_title %}Student Information System{% endblock %}</h1>
+        <p>{% block subtitle %}CCC181{% endblock %}</p>
+        <div class="buttons">
+            <button class="btn about">About Me</button>
+            <button class="btn get-started">Get Started</button>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    {% block features %}{% endblock %}
+</section>
+
+<section class="gallery">
+    {% block gallery %}{% endblock %}
+</section>
+{% endblock %}
