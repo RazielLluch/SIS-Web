@@ -1,3 +1,11 @@
+# IntelliJ IDEA
+*.iml
+.idea/
+
+# Build output directories
+/out/
+
+
 # Ignore the pipenv virtual environment directory
 .venv/
 
@@ -11,9 +19,6 @@ __pycache__/
 
 # macOS specific files (if you are on macOS)
 .DS_Store
-
-# PyCharm specific files (for PyCharm projects)
-.idea/
 
 # Ignore log files and other local development artifacts
 *.log
