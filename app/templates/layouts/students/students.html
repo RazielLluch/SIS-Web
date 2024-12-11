@@ -5,31 +5,53 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modals.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    .content {
-        padding: 0 50px 0 50px;
-    }
+  .content {
+    padding: 0 50px 0 50px;
+  }
 
-    .buttons {
-        display: flex;
-        justify-content: flex-end; /* Align buttons to the right */
-        margin-bottom: 1rem; /* Add some space between buttons and table */
-    }
+  .buttons {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    margin-bottom: 1rem; /* Add some space between buttons and table */
+  }
 
-    table {
-        width: 100%; /* Ensure the table spans the full width */
-        border-collapse: collapse;
-    }
+  table {
+    width: 100%; /* Ensure the table spans the full width */
+    border-collapse: collapse;
+  }
 
-    table th,
-    table td {
-        border: 1px solid #ddd; /* Add borders for clarity */
-        padding: 8px;
-        text-align: left;
-    }
+  table th,
+  table td {
+    border: 1px solid #ddd; /* Add borders for clarity */
+    padding: 8px;
+    text-align: left;
+  }
 
-    table thead {
-        background-color: #f2f2f2; /* Optional: Highlight table header */
-    }
+  table thead {
+    background-color: #f2f2f2; /* Optional: Highlight table header */
+  }
+
+  /* Default hover effect when not selected */
+  tr:hover {
+    background-color: #f1f1f1; /* Light gray hover color for unselected rows */
+  }
+
+  /* Hover effect when the row is selected */
+  tr.selected:hover {
+    background-color: #8cbe9f; /* Slightly darker shade of green for selected rows */
+  }
+
+  /* The color when the row is selected */
+  .selected {
+    background-color: #a3c4b2; /* Slightly darker green when selected */
+  }
+
+  /* Optional: Smooth transition for background color changes */
+  tr {
+    transition: background-color 0.3s ease;
+  }
+
+
 </style>
 {% endblock %}
 
@@ -37,26 +59,27 @@
 <div class="content">
     <div class="buttons">
       <button id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add</button>
-      <button id="deleteButton" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+      <button id="deleteButton" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>Delete</button>
     </div>
 
-    <table>
-      <thead>
-      <tr>
-        <th>Id</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Course</th>
-        <th>Year</th>
-        <th>Gender</th>
-      </tr>
-      </thead>
-      <tbody>
-      {% for student in students %}
+  <table id="studentsTable">
+    <thead>
+    <tr>
+      <th></th>
+      <th>Id</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Course</th>
+      <th>Year</th>
+      <th>Gender</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for student in students %}
       {% include 'layouts/students/student_row.html' %}
-      {% endfor %}
-      </tbody>
-    </table>
+    {% endfor %}
+    </tbody>
+  </table>
 
     <!-- Add Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -129,4 +152,66 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const deleteButton = document.getElementById("deleteButton");
+    const studentRows = document.querySelectorAll("#studentsTable tbody tr");
+    const deleteForm = document.getElementById("deleteStudentForm");
+    const studentIdField = document.getElementById("studentId");
+
+    function updateDeleteButtonState() {
+      const selectedCheckboxes = document.querySelectorAll(".row-select-checkbox:checked");
+      deleteButton.disabled = selectedCheckboxes.length === 0;
+    }
+
+    // Add event listener to all rows to toggle checkbox selection and highlight row
+    studentRows.forEach(row => {
+      const checkbox = row.querySelector(".row-select-checkbox");
+
+      // When the row is clicked, toggle checkbox and row selection
+      row.addEventListener("click", function(event) {
+        if (event.target !== checkbox) {  // Don't trigger if the checkbox itself is clicked
+          checkbox.checked = !checkbox.checked;
+        }
+
+        // Toggle the "selected" class on the row
+        if (checkbox.checked) {
+          row.classList.add("selected");
+        } else {
+          row.classList.remove("selected");
+        }
+
+        updateDeleteButtonState();
+      });
+
+      // Add event listener to checkbox to toggle row selection when the checkbox is checked/unchecked
+      checkbox.addEventListener("change", function() {
+        if (checkbox.checked) {
+          row.classList.add("selected");
+        } else {
+          row.classList.remove("selected");
+        }
+        updateDeleteButtonState();
+      });
+    });
+
+    // Handle delete button click
+    deleteButton.addEventListener("click", function() {
+      const selectedRow = document.querySelector(".row-select-checkbox:checked");
+      if (selectedRow) {
+        const studentId = selectedRow.closest("tr").dataset.studentId;
+        studentIdField.value = studentId;
+      }
+    });
+
+    // Handle form submission
+    deleteForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const studentId = studentIdField.value;
+      // Handle the delete request here, e.g., via an AJAX call or form submission.
+      console.log("Deleting student with ID:", studentId);
+      // You can add a function here to delete the student via backend logic.
+    });
+  });
+</script>
 {% endblock %}
