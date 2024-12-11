@@ -1,5 +1,7 @@
 {% extends "./layouts/master_layout.html" %}
 
+{% block title %} {{ title }} {% endblock %}
+
 {% block extra_css %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
@@ -10,8 +12,8 @@
 <section class="title">
     <div class="overlay"></div>
     <div class="content">
-        <h1 title="Title">{% block header_title %}Student Information System{% endblock %}</h1>
-        <p>{% block subtitle %}CCC181{% endblock %}</p>
+        <h1 title="Title">Student Information System</h1>
+        <p>CCC181</p>
         <div class="buttons">
             <button class="btn about">About Me</button>
             <button class="btn get-started">Get Started</button>
