@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{title}}{% endblock %}</title>
+    <title>{% block title %} title {% endblock %}</title>
 
     <!-- Block for styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/master_layout.css') }}">
@@ -18,11 +18,11 @@
         </div>
         <nav>
             <ul>
-                <li class="{% if self.title() == 'Home' %}selected{% endif %}"><a href="/">Home</a></li>
-                <li class="{% if self.title() == 'Students' %}selected{% endif %}"><a href="/students">Students</a></li>
-                <li class="{% if self.title() == 'Courses' %}selected{% endif %}"><a href="#">Courses</a></li>
-                <li class="{% if self.title() == 'Colleges' %}selected{% endif %}"><a href="#">Colleges</a></li>
-                <li class="{% if self.title() == 'About' %}selected{% endif %}"><a href="#">About</a></li>
+                <li class="{% if title == 'Home' %}selected{% endif %}"><a href="/">Home</a></li>
+                <li class="{% if title == 'Students' %}selected{% endif %}"><a href="{{ url_for('students.index') }}">Students</a></li>
+                <li class="{% if title == 'Courses' %}selected{% endif %}"><a href="#">Courses</a></li>
+                <li class="{% if title == 'Colleges' %}selected{% endif %}"><a href="#">Colleges</a></li>
+                <li class="{% if title == 'About' %}selected{% endif %}"><a href="#">About</a></li>
             </ul>
         </nav>
         <div class="auth-buttons">
