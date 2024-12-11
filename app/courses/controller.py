@@ -2,9 +2,9 @@ from flask import render_template, redirect, request, jsonify
 from . import courses_bp
 from ..models.course_model import CourseModel
 
-college_model = CollegeModel()
+course_model = CourseModel()
 
 
-@colleges_bp.route('/colleges')
+@colleges_bp.route('/courses')
 def index():
-    return render_template('layouts/colleges/colleges.html', colleges=college_model.fetch_all())
+    return render_template('layouts/courses/courses.html', courses=course_model.fetch_all())
