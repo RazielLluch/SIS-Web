@@ -7,4 +7,4 @@ course_model = CourseModel()
 
 @courses_bp.route('/courses')
 def index():
-    return render_template('layouts/courses/courses.html', courses=course_model.fetch_all())
+    return render_template('layouts/courses/courses.html', title="Courses", courses=course_model.fetch_all())
