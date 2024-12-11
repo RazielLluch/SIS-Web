@@ -5,6 +5,6 @@ from ..models.course_model import CourseModel
 course_model = CourseModel()
 
 
-@colleges_bp.route('/courses')
+@courses_bp.route('/courses')
 def index():
     return render_template('layouts/courses/courses.html', courses=course_model.fetch_all())
