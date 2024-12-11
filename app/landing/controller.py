@@ -1,16 +1,15 @@
 from flask import render_template, redirect, request, jsonify
 from . import landing_bp
+
+
 # import app.models as models
 # from app.user.forms import UserForm
 
 
-@landing_bp.route('/home/username')
-@landing_bp.route('/home/')
-@landing_bp.route('/<username>')
-@landing_bp.route('/')
+@landing_bp.route('/home', methods=['GET'])
+@landing_bp.route('/', methods=['GET'])
 def index():
-    return render_template('index.html',title='Home',active_page='Landing')
-
+    return render_template('index.html', title='Home', active_page='Landing')
 
 # @landing_bp.route('/user/register', methods=['POST','GET'])
 # def register():

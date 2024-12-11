@@ -10,5 +10,5 @@ s_model = StudentModel()
 
 
 @students_bp.route('/students')
-def index(username="user"):
+def index():
     return render_template('layouts/students/students.html', title='Students', students=s_model.fetch_all())
