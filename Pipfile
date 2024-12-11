@@ -5,17 +5,12 @@ name = "pypi"
 
 [packages]
 flask = "*"
-flask-mysqldb = "*"
-flask-bootstrap = "*"
-config = "*"
-flask-wtf = "*"
-python-dotenv = "*"
-flask-login = "*"
 mysql-connector-python = "*"
-python = "*"
+config = "*"
+python-dotenv = "*"
+flask-bootstrap = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.12"
-python_full_version = "3.12.1"
