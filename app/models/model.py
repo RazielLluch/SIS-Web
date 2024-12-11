@@ -25,6 +25,11 @@ class Model:
         
         print("Query to execute: ", query)
         
+        self.cur.close()
+        self.db.close()
+
+        self.db, self.cur = connect_db()
+        
         try:
             self.cur.execute(query, params or ())
             if query.strip().lower().startswith("select"):
