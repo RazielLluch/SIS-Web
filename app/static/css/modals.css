@@ -1,0 +1,79 @@
+/* modals.css */
+
+/* Style for modal headers */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #495057;
+}
+
+.btn-close {
+    color: #6c757d;
+}
+
+/* Style for modal bodies */
+.modal-body {
+    font-size: 1rem;
+    color: #495057;
+    padding: 1.5rem;
+}
+
+/* Add modal specific form styling */
+#addStudentForm .form-label,
+#deleteStudentForm .form-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+#addStudentForm .form-control,
+#deleteStudentForm .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+}
+
+/* Highlight focus on input fields */
+#addStudentForm .form-control:focus,
+#deleteStudentForm .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+/* Style buttons */
+button.btn {
+    border-radius: 0.25rem;
+}
+
+button.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+button.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+button.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+button.btn-danger:hover {
+    background-color: #a71d2a;
+}
+
+/* Media query for responsive modals */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 1rem auto;
+    }
+
+    .modal-content {
+        padding: 1rem;
+    }
+}

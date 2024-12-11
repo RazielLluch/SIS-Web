@@ -9,6 +9,7 @@ mysql-connector-python = "*"
 config = "*"
 python-dotenv = "*"
 flask-bootstrap = "*"
+cloudinary = "*"
 
 [dev-packages]
 

@@ -21,7 +21,7 @@
                 <li class="{% if title == 'Home' %}selected{% endif %}"><a href="/">Home</a></li>
                 <li class="{% if title == 'Students' %}selected{% endif %}"><a href="{{ url_for('students.index') }}">Students</a></li>
                 <li class="{% if title == 'Courses' %}selected{% endif %}"><a href="#">Courses</a></li>
-                <li class="{% if title == 'Colleges' %}selected{% endif %}"><a href="#">Colleges</a></li>
+                <li class="{% if title == 'Colleges' %}selected{% endif %}"><a href="{{ url_for('colleges.index') }}">Colleges</a></li>
                 <li class="{% if title == 'About' %}selected{% endif %}"><a href="#">About</a></li>
             </ul>
         </nav>

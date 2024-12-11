@@ -2,7 +2,14 @@ from ..models.model import Model
 
 
 class StudentModel(Model):
-    def __init__(self):
+    def __init__(self, student_id=None,
+                 firstname=None,
+                 lastname=None,
+                 course=None,
+                 year=None,
+                 gender=None,
+                 profile_picture_url=None
+                 ):
         super().__init__()
         self.table_name = 'student'
 
