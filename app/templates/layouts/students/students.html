@@ -92,18 +92,18 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form id="addStudentForm">
+            <form id="addStudentForm" method="POST" action="{{ url_for('students.add_student') }}">
                 <div class="mb-3">
                     <label for="student_id" class="form-label">ID Number(yyyy-nnnn)</label>
                     <input type="text" class="form-control" id="student_id" name="student_id" required>
                 </div>
               <div class="mb-3">
-                <label for="firstName" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                <label for="firstname" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstname" name="firstname" required>
               </div>
               <div class="mb-3">
-                <label for="lastName" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                <label for="lastname" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastname" name="lastname" required>
               </div>
               <div class="mb-3">
                 <label for="course" class="form-label">Course</label>
@@ -140,9 +140,8 @@
           <div class="modal-body">
             <form id="deleteStudentForm">
               <div class="mb-3">
-                <label for="studentId" class="form-label">Student ID</label>
-                <input type="number" class="form-control" id="studentId" name="studentId" required>
               </div>
+              <button type="button" class="btn btn-cancel" data-bs-dismiss="deleteModal">Cancel</button>
               <button type="submit" class="btn btn-danger">Delete</button>
             </form>
           </div>
