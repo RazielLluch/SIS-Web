@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, jsonify, url_for
+from flask import render_template, redirect, request, jsonify, url_for, flash
 from . import students_bp
 from ..models.student_model import StudentModel
 
@@ -37,3 +37,22 @@ def add_student():
     new_student_model.add_student()
 
     return redirect(url_for('students.index'))
+
+
+@students_bp.route('/students/delete', methods=['POST'])
+def delete_student():
+    data = request.get_json()
+    student_ids = data.get('student_ids', [])
+    if not student_ids:
+        return jsonify({'error': 'No student IDs provided'}), 400
+
+    result = s_model.delete_by_ids(student_ids)
+    
+    if result:
+        response = jsonify({'message': 'Students deleted successfully', 'deleted_ids': student_ids})
+        print(response.get_json())
+        return response
+    else:
+        response = jsonify({'message': result, 'deleted_ids': student_ids})
+        print(response.get_json())
+        return response

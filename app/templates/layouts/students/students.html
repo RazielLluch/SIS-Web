@@ -138,9 +138,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form id="deleteStudentForm">
+            <form id="deleteStudentForm" method="POST" action="{{ url_for('students.delete_student') }}">
               <div class="mb-3">
               </div>
+              <input type="hidden" id="studentIds" name="student_ids">
               <button type="button" class="btn btn-cancel" data-bs-dismiss="deleteModal">Cancel</button>
               <button type="submit" class="btn btn-danger">Delete</button>
             </form>
@@ -158,7 +159,7 @@
     const deleteButton = document.getElementById("deleteButton");
     const studentRows = document.querySelectorAll("#studentsTable tbody tr");
     const deleteForm = document.getElementById("deleteStudentForm");
-    const studentIdField = document.getElementById("studentId");
+    const studentIdsField = document.getElementById("studentIds");
 
     function updateDeleteButtonState() {
       const selectedCheckboxes = document.querySelectorAll(".row-select-checkbox:checked");
@@ -198,21 +199,44 @@
 
     // Handle delete button click
     deleteButton.addEventListener("click", function() {
-      const selectedRow = document.querySelector(".row-select-checkbox:checked");
-      if (selectedRow) {
-        const studentId = selectedRow.closest("tr").dataset.studentId;
-        studentIdField.value = studentId;
-      }
+      const selectedRows = document.querySelectorAll(".row-select-checkbox:checked");
+      const selectedIds = Array.from(selectedRows).map(row => row.closest("tr").dataset.studentId);
+      studentIdsField.value = JSON.stringify(selectedIds); // Store as a JSON array
     });
 
     // Handle form submission
-    deleteForm.addEventListener("submit", function(e) {
+    deleteForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const studentId = studentIdField.value;
-      // Handle the delete request here, e.g., via an AJAX call or form submission.
-      console.log("Deleting student with ID:", studentId);
-      // You can add a function here to delete the student via backend logic.
+      const studentIds = JSON.parse(studentIdsField.value);
+      console.log("Deleting students with IDs:", studentIds);
+
+      // Make the backend POST request
+      const response = await fetch(`/students/delete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ student_ids: studentIds })
+      })
+              .then(response => response.json())
+              .then(data => {
+                alert(`Student deleted successfully with data: ${JSON.stringify(data)}`);
+
+                // Close the modal
+                const modal = document.getElementById('deleteModal'); // Replace 'modalId' with the actual modal ID
+                const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                if (bootstrapModal) {
+                  bootstrapModal.hide(); // Close the modal
+                }
+
+                // Optionally refresh the table or remove the rows
+                window.location.reload()
+              })
+              .catch(error => {
+                alert(`Error deleting students: ${error}`);
+              });
     });
   });
+
 </script>
 {% endblock %}

@@ -22,14 +22,14 @@ class Model:
         :param fetch_one: Whether to fetch only one row.
         :return: Query results or None.
         """
-        
+
         print("Query to execute: ", query)
-        
+
         self.cur.close()
         self.db.close()
 
         self.db, self.cur = connect_db()
-        
+
         try:
             self.cur.execute(query, params or ())
             if query.strip().lower().startswith("select"):
@@ -96,17 +96,29 @@ class Model:
         params = tuple(data.values()) + tuple(conditions.values())
         return self.execute_query(query, params)
 
-    def delete(self, table_name, conditions):
+    def delete(self, table_name, column, values):
         """
-        Delete records from a table.
+        Delete records from a table based on a list of values.
         :param table_name: Name of the table.
-        :param conditions: Dictionary of column-value pairs for WHERE clause.
-        :return: Number of affected rows.
+        :param column: Column name to match values against.
+        :param values: List of values for the IN clause.
+        :return: True if successful, or the error message if unsuccessful.
         """
-        condition_clauses = ' AND '.join([f"{key}=%s" for key in conditions.keys()])
-        query = f"DELETE FROM {table_name} WHERE {condition_clauses}"
-        params = tuple(conditions.values())
-        return self.execute_query(query, params)
+        
+        self.db, self.cur = connect_db()
+        
+        placeholders = ', '.join(['%s'] * len(values))  # Create placeholders for each value
+        query = f"DELETE FROM {table_name} WHERE {column} IN ({placeholders})"
+        params = tuple(values)
+
+        try:
+            with self.cur as cursor:
+                cursor.execute(query, params)
+                self.db.commit()
+                return True  # Deletion was successful
+        except Exception as e:
+            self.connection.rollback()  # Rollback the transaction in case of error
+            return str(e)  # Return the error message
 
     @staticmethod
     def sanitize_data(data):

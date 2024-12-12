@@ -41,4 +41,6 @@ class StudentModel(Model):
                 'profile_picture_url': self.profile_picture_url
             }
         )
-        
+
+    def delete_by_ids(self, student_ids):
+        return self.delete(self.table_name, 'id', student_ids)
