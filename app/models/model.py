@@ -51,14 +51,17 @@ class Model:
         :param data: Dictionary containing column names and values.
         :return: Last inserted ID.
         """
+        data = self.sanitize_data(data)
         columns = ', '.join(data.keys())
         placeholders = ', '.join(['%s'] * len(data))
         query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-        self.cur = self.mysql.connection.cursor()
+        self.db, self.cur = connect_db()
         try:
             self.cur.execute(query, tuple(data.values()))
-            self.mysql.connection.commit()
-            return self.cur.lastrowid
+            self.db.commit()
+            result = self.cur.lastrowid
+            print("result: ", result)
+            return result
         finally:
             self.cur.close()
 
@@ -104,3 +107,7 @@ class Model:
         query = f"DELETE FROM {table_name} WHERE {condition_clauses}"
         params = tuple(conditions.values())
         return self.execute_query(query, params)
+
+    @staticmethod
+    def sanitize_data(data):
+        return {k: (v if v is not None else 'NULL') for k, v in data.items()}
