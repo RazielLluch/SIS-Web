@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} title {% endblock %}</title>
 
-    <!-- Block for styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/master_layout.css') }}">
+
+    <!-- Block for extra styles -->
     {% block extra_css %} {% endblock %}
 </head>
 <body>
 
 <header>
-    <div class="container">
+    <div class="navbar-container">
         <div class="logo">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
         </div>
-        <nav>
+        <nav class="navbar-nav">
             <ul>
                 <li class="{% if title == 'Home' %}selected{% endif %}"><a href="/">Home</a></li>
                 <li class="{% if title == 'Students' %}selected{% endif %}"><a href="{{ url_for('students.index') }}">Students</a></li>
