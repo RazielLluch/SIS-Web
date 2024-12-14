@@ -34,14 +34,14 @@ def add_student():
         # profile_picture_url=profile_picture_url,
     )
 
-    new_student_model.add_student()
+    new_student_model.add()
 
     return redirect(url_for('students.index'))
 
 
-@students_bp.route('/students/edit/<studentId>', methods=['POST'])
-def edit_student(studentId):
-    id = request.form.get('student_id')
+@students_bp.route('/students/edit/<student_id>', methods=['POST'])
+def edit_student(student_id):
+    student_id = request.form.get('student_id')
     firstname = request.form.get('firstname')
     lastname = request.form.get('lastname')
     course = request.form.get('course')
@@ -51,7 +51,7 @@ def edit_student(studentId):
     # print("request data: ", data)
 
     edit_student_model = StudentModel(
-        student_id=id,
+        student_id=student_id,
         firstname=firstname,
         lastname=lastname,
         course=course,
@@ -63,12 +63,12 @@ def edit_student(studentId):
 
     result = edit_student_model.edit(studentId)
 
-    if result == True:
-        response = jsonify({'message': 'Students updated successfully', 'updated_id': id})
+    if result:
+        response = jsonify({'message': 'Students updated successfully', 'updated_id': student_id})
         print(response.get_json())
         return redirect(url_for('students.index'))
     else:
-        response = jsonify({'message': result, 'edit_id': id})
+        response = jsonify({'message': result, 'edit_id': student_id})
         print(response.get_json())
         return response
 
@@ -83,7 +83,12 @@ def delete_student():
     result = s_model.delete_by_ids(student_ids)
 
     if result:
-        response = jsonify({'message': 'Students deleted successfully', 'deleted_ids': student_ids})
+        response = jsonify(
+            {
+                'message': 'Students deleted successfully',
+                'deleted_ids': student_ids
+            }
+        )
         print(response.get_json())
         return response
     else:
