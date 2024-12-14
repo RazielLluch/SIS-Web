@@ -27,28 +27,27 @@ def add_course():
     return redirect(url_for('courses.index'))
 
 
-@courses_bp.route('/courses/edit/<courseId>', methods=['POST'])
-def edit_course(courseId):
-    id = request.form.get('course_id')
+@courses_bp.route('/courses/edit/<basis_course_id>', methods=['POST'])
+def edit_course(basis_course_id):
+    course_id = request.form.get('course_id')
     course_name = request.form.get('course_name')
     college = request.form.get('college')
 
     edit_course_model = CourseModel(
-        course_id=id,
+        course_id=course_id,
         name=course_name,
         college=college,
     )
 
     print("edit_course_model.to_dict: ", edit_course_model.to_dict())
+    result = edit_course_model.edit(basis_course_id)
 
-    result = edit_course_model.edit(courseId)
-
-    if result == True:
-        response = jsonify({'message': 'Students updated successfully', 'updated_id': id})
+    if result:
+        response = jsonify({'message': 'Students updated successfully', 'basis_id': basis_course_id, 'updated_id': course_id})
         print(response.get_json())
-        return redirect(url_for('students.index'))
+        return redirect(url_for('courses.index'))
     else:
-        response = jsonify({'message': result, 'edit_id': id})
+        response = jsonify({'message': result, 'basis_id': basis_course_id})
         print(response.get_json())
         return response
 

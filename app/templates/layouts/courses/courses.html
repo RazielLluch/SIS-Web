@@ -17,16 +17,6 @@
         margin-bottom: 1rem; /* Add some space between buttons and table */
     }
 
-    .content {
-        padding: 0 50px 0 50px;
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: flex-end; /* Align buttons to the right */
-        margin-bottom: 1rem; /* Add some space between buttons and table */
-    }
-
     table {
         width: 100%; /* Ensure the table spans the full width */
         border-collapse: collapse;
@@ -42,6 +32,27 @@
     table thead {
         background-color: #f2f2f2; /* Optional: Highlight table header */
     }
+
+    /* Default hover effect when not selected */
+    tr:hover {
+        background-color: #f1f1f1; /* Light gray hover color for unselected rows */
+    }
+
+    /* Hover effect when the row is selected */
+    tr.selected:hover {
+        background-color: #8cbe9f; /* Slightly darker shade of green for selected rows */
+    }
+
+    /* The color when the row is selected */
+    .selected {
+        background-color: #a3c4b2; /* Slightly darker green when selected */
+    }
+
+    /* Optional: Smooth transition for background color changes */
+    tr {
+        transition: background-color 0.3s ease;
+    }
+
 </style>
 {% endblock %}
 
@@ -117,13 +128,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="edit_coursename" class="form-label">Course Name</label>
-                            <input type="text" class="form-control" id="edit_coursename" name="coursename" required>
+                            <input type="text" class="form-control" id="edit_coursename" name="course_name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_year" class="form-label">College</label>
-                            <select class="form-select" id="edit_year" name="year" required>
-                                <option value="" disabled selected>Select Year Level</option>
-                                <option value="BSCS">BSCS</option>
+                            <label for="edit_college" class="form-label">College</label>
+                            <select class="form-select" id="edit_college" name="college" required>
+                                <option value="" disabled selected>Select College</option>
+                                <option value="CCS">CCS</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Edit</button>
