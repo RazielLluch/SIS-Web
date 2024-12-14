@@ -28,7 +28,6 @@ class StudentModel(Model):
         return self.read(self.table_name)
 
     def add_student(self):
-
         self.create(
             self.table_name,
             {
@@ -42,5 +41,34 @@ class StudentModel(Model):
             }
         )
 
+    def edit(self, basis_id):
+        self_dict = self.to_dict()
+        
+        print("self_dict: ",self_dict)
+        
+        return self.update(
+            self.table_name,
+            self_dict,
+            {
+                "id": basis_id
+            }
+        )
+
     def delete_by_ids(self, student_ids):
-        return self.delete(self.table_name, 'id', student_ids)
+        return self.delete(
+            self.table_name,
+            'id',
+            student_ids
+        )
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'firstname': self.firstname,
+            'lastname': self.lastname,
+            'course': self.course,
+            'year': self.year,
+            'gender': self.gender,
+            'profile_picture_url': self.profile_picture_url,
+        }
+
