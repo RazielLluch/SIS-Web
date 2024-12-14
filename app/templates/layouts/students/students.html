@@ -61,6 +61,7 @@
 <div class="content">
     <div class="buttons">
       <button id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add</button>
+      <button id="editButton" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#editModal" disabled>Edit</button>
       <button id="deleteButton" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>Delete</button>
     </div>
 
@@ -83,72 +84,118 @@
     </tbody>
   </table>
 
-    <!-- Add Modal -->
-    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addModalLabel">Add Student</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="addStudentForm" method="POST" action="{{ url_for('students.add_student') }}">
-                <div class="mb-3">
-                    <label for="student_id" class="form-label">ID Number(yyyy-nnnn)</label>
-                    <input type="text" class="form-control" id="student_id" name="student_id" required>
-                </div>
+  <!-- Add Modal -->
+  <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addModalLabel">Add Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addStudentForm" method="POST" action="{{ url_for('students.add_student') }}">
               <div class="mb-3">
-                <label for="firstname" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="firstname" name="firstname" required>
+                  <label for="student_id" class="form-label">ID Number(yyyy-nnnn)</label>
+                  <input type="text" class="form-control" id="student_id" name="student_id" required>
               </div>
-              <div class="mb-3">
-                <label for="lastname" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="lastname" name="lastname" required>
-              </div>
-              <div class="mb-3">
-                <label for="course" class="form-label">Course</label>
-                <input type="text" class="form-control" id="course" name="course" required>
-              </div>
-              <div class="mb-3">
-                <label for="year" class="form-label">Year</label>
-                <input type="number" class="form-control" id="year" name="year" required>
-              </div>
-              <div class="mb-3">
-                <label for="gender" class="form-label">Gender</label>
-                <select class="form-select" id="gender" name="gender" required>
-                  <option value="" disabled selected>Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-          </div>
+            <div class="mb-3">
+              <label for="firstname" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstname" name="firstname" required>
+            </div>
+            <div class="mb-3">
+              <label for="lastname" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lastname" name="lastname" required>
+            </div>
+            <div class="mb-3">
+              <label for="course" class="form-label">Course</label>
+              <input type="text" class="form-control" id="course" name="course" required>
+            </div>
+            <div class="mb-3">
+              <label for="year" class="form-label">Year</label>
+              <input type="number" class="form-control" id="year" name="year" required>
+            </div>
+            <div class="mb-3">
+              <label for="gender" class="form-label">Gender</label>
+              <select class="form-select" id="gender" name="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
         </div>
       </div>
     </div>
+  </div>
 
 
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteModalLabel">Delete Student</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="deleteStudentForm" method="POST" action="{{ url_for('students.delete_student') }}">
-              <div class="mb-3">
-              </div>
-              <input type="hidden" id="studentIds" name="student_ids">
-              <button type="button" class="btn btn-cancel" data-bs-dismiss="deleteModal">Cancel</button>
-              <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-          </div>
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="deleteStudentForm" method="POST" action="{{ url_for('students.delete_student') }}">
+            <div class="mb-3">
+            </div>
+            <input type="hidden" id="studentIds" name="student_ids">
+            <button type="button" class="btn btn-cancel" data-bs-dismiss="deleteModal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Add Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editStudentForm" method="POST">
+            <div class="mb-3">
+              <label for="student_id" class="form-label">ID Number(yyyy-nnnn)</label>
+              <input type="text" class="form-control" id="edit_student_id" name="student_id" required>
+            </div>
+            <div class="mb-3">
+              <label for="firstname" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="edit_firstname" name="firstname" required>
+            </div>
+            <div class="mb-3">
+              <label for="lastname" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="edit_lastname" name="lastname" required>
+            </div>
+            <div class="mb-3">
+              <label for="course" class="form-label">Course</label>
+              <input type="text" class="form-control" id="edit_course" name="course" required>
+            </div>
+            <div class="mb-3">
+              <label for="year" class="form-label">Year</label>
+              <input type="number" class="form-control" id="edit_year" name="year" required>
+            </div>
+            <div class="mb-3">
+              <label for="gender" class="form-label">Gender</label>
+              <select class="form-select" id="edit_gender" name="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 
@@ -158,12 +205,31 @@
   document.addEventListener("DOMContentLoaded", function() {
     const deleteButton = document.getElementById("deleteButton");
     const studentRows = document.querySelectorAll("#studentsTable tbody tr");
+    const editButton = document.getElementById("editButton")
     const deleteForm = document.getElementById("deleteStudentForm");
     const studentIdsField = document.getElementById("studentIds");
+    const editStudentForm = document.getElementById("editStudentForm");
 
-    function updateDeleteButtonState() {
+    function getSelectedStudentId() {
+      const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
+      if (selectedCheckbox) {
+        const studentRow = selectedCheckbox.closest("tr");
+        return studentRow.querySelector("td:nth-child(2)").textContent.trim(); // Adjust column index if necessary
+      }
+      return null;
+    }
+
+    editButton.addEventListener("click", function() {
+      const selectedStudentId = getSelectedStudentId();
+      if (selectedStudentId) {
+        editStudentForm.action = `/students/edit/${selectedStudentId}`;
+      }
+    });
+
+    function updateButtonState() {
       const selectedCheckboxes = document.querySelectorAll(".row-select-checkbox:checked");
       deleteButton.disabled = selectedCheckboxes.length === 0;
+      editButton.disabled = selectedCheckboxes.length !== 1;
     }
 
     // Add event listener to all rows to toggle checkbox selection and highlight row
@@ -183,7 +249,7 @@
           row.classList.remove("selected");
         }
 
-        updateDeleteButtonState();
+        updateButtonState();
       });
 
       // Add event listener to checkbox to toggle row selection when the checkbox is checked/unchecked
@@ -193,7 +259,7 @@
         } else {
           row.classList.remove("selected");
         }
-        updateDeleteButtonState();
+        updateButtonState();
       });
     });
 
@@ -209,6 +275,8 @@
       e.preventDefault();
       const studentIds = JSON.parse(studentIdsField.value);
       console.log("Deleting students with IDs:", studentIds);
+
+      alert(`studentIds: ${studentIds}`)
 
       // Make the backend POST request
       const response = await fetch(`/students/delete`, {

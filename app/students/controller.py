@@ -39,6 +39,40 @@ def add_student():
     return redirect(url_for('students.index'))
 
 
+@students_bp.route('/students/edit/<studentId>', methods=['POST'])
+def edit_student(studentId):
+    id = request.form.get('student_id')
+    firstname = request.form.get('firstname')
+    lastname = request.form.get('lastname')
+    course = request.form.get('course')
+    year = request.form.get('year')
+    gender = request.form.get('gender')
+
+    # print("request data: ", data)
+
+    edit_student_model = StudentModel(
+        student_id=id,
+        firstname=firstname,
+        lastname=lastname,
+        course=course,
+        year=year,
+        gender=gender,
+    )
+    
+    print("edit_student_model.to_dict: ", edit_student_model.to_dict())
+
+    result = edit_student_model.edit(studentId)
+
+    if result == True:
+        response = jsonify({'message': 'Students updated successfully', 'updated_id': id})
+        print(response.get_json())
+        return redirect(url_for('students.index'))
+    else:
+        response = jsonify({'message': result, 'edit_id': id})
+        print(response.get_json())
+        return response
+
+
 @students_bp.route('/students/delete', methods=['POST'])
 def delete_student():
     data = request.get_json()
@@ -47,7 +81,7 @@ def delete_student():
         return jsonify({'error': 'No student IDs provided'}), 400
 
     result = s_model.delete_by_ids(student_ids)
-    
+
     if result:
         response = jsonify({'message': 'Students deleted successfully', 'deleted_ids': student_ids})
         print(response.get_json())
