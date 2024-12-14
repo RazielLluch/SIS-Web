@@ -35,8 +35,7 @@ class CourseModel(Model):
             {"id": basis_id}
         )
 
-    @staticmethod
-    def delete_by_ids(course_ids):
+    def delete_by_ids(self, course_ids):
         return self.delete(
             self.table_name,
             'id',

@@ -60,7 +60,7 @@ def edit_course(basis_course_id):
 @courses_bp.route('/courses/delete', methods=['POST'])
 def delete_course():
     data = request.get_json()
-    course_ids = data.get('student_ids', [])
+    course_ids = data.get('course_ids', [])
     if not course_ids:
         return jsonify({'error': 'No course IDs provided'}), 400
 
@@ -70,7 +70,8 @@ def delete_course():
         response = jsonify(
             {
                 'message': 'Courses deleted successfully',
-                'deleted_ids': course_ids}
+                'deleted_ids': course_ids
+            }
         )
         print(response.get_json())
         return response
