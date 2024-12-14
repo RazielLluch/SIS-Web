@@ -12,6 +12,7 @@ class StudentModel(Model):
                  profile_picture_url=None
                  ):
         super().__init__()
+        self.table_name = 'student'
         self.id = student_id
         self.firstname = firstname
         self.lastname = lastname
@@ -19,7 +20,6 @@ class StudentModel(Model):
         self.year = year
         self.gender = gender
         self.profile_picture_url = profile_picture_url
-        self.table_name = 'student'
 
     def find_by_id(self, student_id):
         return self.read(self.table_name, conditions={'id': student_id}, fetch_one=True)
