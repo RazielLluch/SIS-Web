@@ -7,12 +7,19 @@ class Model:
     This class includes basic CRUD functionalities and can be inherited by specific model classes.
     """
 
-    def __init__(self):
+    def __init__(self, table_name):
         """
         Initialize the BaseModel with a MySQL instance.
         :param mysql: Flask-MySQLdb MySQL instance.
         """
         self.db, self.cur = connect_db()
+        self.table_name = table_name
+
+    def find_by_id(self, id):
+        return self.read(self.table_name, conditions={'id': id}, fetch_one=True)
+
+    def fetch_all(self):
+        return self.read(self.table_name)
 
     def execute_query(self, query, params=None, fetch_one=False):
         """

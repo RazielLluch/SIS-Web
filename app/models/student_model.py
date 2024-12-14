@@ -11,8 +11,7 @@ class StudentModel(Model):
                  gender=None,
                  profile_picture_url=None
                  ):
-        super().__init__()
-        self.table_name = 'student'
+        super().__init__('student')
         self.id = student_id
         self.firstname = firstname
         self.lastname = lastname
@@ -32,11 +31,11 @@ class StudentModel(Model):
             'profile_picture_url': self.profile_picture_url,
         }
 
-    def find_by_id(self, student_id):
-        return self.read(self.table_name, conditions={'id': student_id}, fetch_one=True)
-
-    def fetch_all(self):
-        return self.read(self.table_name)
+    # def find_by_id(self, student_id):
+    #     return self.read(self.table_name, conditions={'id': student_id}, fetch_one=True)
+    #
+    # def fetch_all(self):
+    #     return self.read(self.table_name)
 
     def add(self):
         self.create(
