@@ -12,12 +12,12 @@ def index():
 
 @courses_bp.route('/courses/add', methods=['POST'])
 def add_course():
-    id = request.form.get('course_id')
+    course_id = request.form.get('course_id')
     course_name = request.form.get('coursename')
     college = request.form.get('college')
 
     new_course_model = CourseModel(
-        course_id=id,
+        course_id=course_id,
         name=course_name,
         college=college,
     )
@@ -43,7 +43,12 @@ def edit_course(basis_course_id):
     result = edit_course_model.edit(basis_course_id)
 
     if result:
-        response = jsonify({'message': 'Students updated successfully', 'basis_id': basis_course_id, 'updated_id': course_id})
+        response = jsonify(
+            {
+                'message': 'Students updated successfully',
+                'basis_id': basis_course_id,
+                'updated_id': course_id}
+        )
         print(response.get_json())
         return redirect(url_for('courses.index'))
     else:
@@ -55,17 +60,21 @@ def edit_course(basis_course_id):
 @courses_bp.route('/courses/delete', methods=['POST'])
 def delete_course():
     data = request.get_json()
-    student_ids = data.get('student_ids', [])
-    if not student_ids:
-        return jsonify({'error': 'No student IDs provided'}), 400
+    course_ids = data.get('student_ids', [])
+    if not course_ids:
+        return jsonify({'error': 'No course IDs provided'}), 400
 
-    result = s_model.delete_by_ids(student_ids)
+    result = course_model.delete_by_ids(course_ids)
 
     if result:
-        response = jsonify({'message': 'Students deleted successfully', 'deleted_ids': student_ids})
+        response = jsonify(
+            {
+                'message': 'Courses deleted successfully',
+                'deleted_ids': course_ids}
+        )
         print(response.get_json())
         return response
     else:
-        response = jsonify({'message': result, 'deleted_ids': student_ids})
+        response = jsonify({'message': result, 'deleted_ids': course_ids})
         print(response.get_json())
         return response
