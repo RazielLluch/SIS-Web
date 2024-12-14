@@ -90,11 +90,24 @@ class Model:
         :param conditions: Dictionary of column-value pairs for WHERE clause.
         :return: Number of affected rows.
         """
+
+        self.db, self.cur = connect_db()
+
+        data = self.sanitize_data(data)
+    
         set_clauses = ', '.join([f"{key}=%s" for key in data.keys()])
         condition_clauses = ' AND '.join([f"{key}=%s" for key in conditions.keys()])
         query = f"UPDATE {table_name} SET {set_clauses} WHERE {condition_clauses}"
         params = tuple(data.values()) + tuple(conditions.values())
-        return self.execute_query(query, params)
+
+        try:
+            with self.cur as cursor:
+                cursor.execute(query, params)
+                self.db.commit()
+                return True  # Deletion was successful
+        except Exception as e:
+            self.db.rollback()  # Rollback the transaction in case of error
+            return str(e)  # Return the error message
 
     def delete(self, table_name, column, values):
         """
