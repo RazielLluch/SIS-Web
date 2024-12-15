@@ -5,7 +5,20 @@
 {% block extra_css %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+<style>
+    .btn a {
+    text-decoration: none; /* Removes the underline */
+    color: inherit; /* Ensures the link inherits the color from the button */
+    display: block; /* Makes the entire button clickable */
+    width: 100%; /* Ensures the link spans the button */
+    height: 100%; /* Ensures the link spans the button */
+    }
 
+    .btn a:focus,
+    .btn a:active {
+    outline: none; /* Removes the focus highlight */
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -15,8 +28,8 @@
         <h1 title="Title">Student Information System</h1>
         <p>CCC181</p>
         <div class="buttons">
-            <button class="btn about">About Me</button>
-            <button class="btn get-started">Get Started</button>
+            <button class="btn about"><a href="https://github.com/RazielLluch">About Me</a></button>
+            <button class="btn get-started"><a href="{{ url_for('students.index') }}">Get Started</a></button>
         </div>
     </div>
 </section>
