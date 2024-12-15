@@ -23,13 +23,13 @@
                 <li class="{% if title == 'Students' %}selected{% endif %}"><a href="{{ url_for('students.index') }}">Students</a></li>
                 <li class="{% if title == 'Courses' %}selected{% endif %}"><a href="{{ url_for('courses.index') }}">Courses</a></li>
                 <li class="{% if title == 'Colleges' %}selected{% endif %}"><a href="{{ url_for('colleges.index') }}">Colleges</a></li>
-                <li class="{% if title == 'About' %}selected{% endif %}"><a href="#">About</a></li>
+                <li class="{% if title == 'About' %}selected{% endif %}"><a href="https://github.com/RazielLluch/SIS-Web">About</a></li>
             </ul>
         </nav>
-        <div class="auth-buttons">
-            <button class="sign-in">Sign in</button>
-            <button class="sign-out">Sign out</button>
-        </div>
+<!--        <div class="auth-buttons">-->
+<!--            <button class="sign-in">Sign in</button>-->
+<!--            <button class="sign-out">Sign out</button>-->
+<!--        </div>-->
     </div>
 </header>
 
@@ -39,7 +39,15 @@
 
 <!-- Block for scripts -->
 {% block scripts %}
-<!-- Additional scripts for child templates can be added here -->
+
+<script>
+
+    document.getElementById("aboutButton").onclick = function () {
+        location.href = "https://github.com/RazielLluch";
+    };
+
+</script>
+
 {% endblock %}
 
 <footer>
