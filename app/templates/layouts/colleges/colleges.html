@@ -160,18 +160,25 @@
         const collegeIdsField = document.getElementById("collegeIds");
         const editCollegeForm = document.getElementById("editCollegeForm");
 
-        function getSelectedCollegeId() {
+        function getSelectedCollegeRowAndId() {
             const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
             if (selectedCheckbox) {
                 const collegeRow = selectedCheckbox.closest("tr");
-                return collegeRow.querySelector("td:nth-child(2)").textContent.trim(); // Adjust column index if necessary
+                return [collegeRow, collegeRow.querySelector("td:nth-child(2)").textContent.trim()]; // Adjust column index if necessary
             }
             return null;
         }
 
         editButton.addEventListener("click", function() {
-            const selectedCollegeId = getSelectedCollegeId();
+            const [selectedCollegeRow, selectedCollegeId] = getSelectedCollegeRowAndId();
             if (selectedCollegeId) {
+                const courseId = selectedCollegeRow.getAttribute("data-college-id");
+                const courseName = selectedCollegeRow.getAttribute("data-college-name");
+
+                // Populate the modal fields
+                document.getElementById("edit_college_id").value = courseId;
+                document.getElementById("edit_collegename").value = courseName;
+
                 editCollegeForm.action = `/colleges/edit/${selectedCollegeId}`;
             }
         });
