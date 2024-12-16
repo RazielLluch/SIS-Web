@@ -175,18 +175,27 @@
         const courseIdsField = document.getElementById("courseIds");
         const editCourseForm = document.getElementById("editCourseForm");
 
-        function getSelectedCourseId() {
+        function getSelectedCourseRowAndId() {
             const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
             if (selectedCheckbox) {
                 const courseRow = selectedCheckbox.closest("tr");
-                return courseRow.querySelector("td:nth-child(2)").textContent.trim(); // Adjust column index if necessary
+                return [courseRow, courseRow.querySelector("td:nth-child(2)").textContent.trim()]; // Adjust column index if necessary
             }
             return null;
         }
 
         editButton.addEventListener("click", function() {
-            const selectedCourseId = getSelectedCourseId();
+            const [selectedCourseRow, selectedCourseId] = getSelectedCourseRowAndId();
             if (selectedCourseId) {
+                const courseId = selectedCourseRow.getAttribute("data-course-id");
+                const courseName = selectedCourseRow.getAttribute("data-course-name");
+                const college = selectedCourseRow.getAttribute("data-college");
+
+                // Populate the modal fields
+                document.getElementById("edit_course_id").value = courseId;
+                document.getElementById("edit_coursename").value = courseName;
+                document.getElementById("edit_college").value = college;
+
                 editCourseForm.action = `/courses/edit/${selectedCourseId}`;
             }
         });
