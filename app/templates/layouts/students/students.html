@@ -195,9 +195,9 @@
                         <div class="mb-3">
                             <label for="gender" class="form-label">Gender</label>
                             <select class="form-select" id="edit_gender" name="gender" required>
-                                <option value="" disabled selected>Select gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -221,18 +221,35 @@
         const studentIdsField = document.getElementById("studentIds");
         const editStudentForm = document.getElementById("editStudentForm");
 
-        function getSelectedStudentId() {
+        function getSelectedStudentRowAndId() {
             const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
             if (selectedCheckbox) {
                 const studentRow = selectedCheckbox.closest("tr");
-                return studentRow.querySelector("td:nth-child(2)").textContent.trim(); // Adjust column index if necessary
+                return [studentRow, studentRow.querySelector("td:nth-child(2)").textContent.trim()]; // Adjust column index if necessary
             }
             return null;
         }
 
+
+
         editButton.addEventListener("click", function() {
-            const selectedStudentId = getSelectedStudentId();
+            const [selectedStudentRow, selectedStudentId] = getSelectedStudentRowAndId();
             if (selectedStudentId) {
+                const studentId = selectedStudentRow.getAttribute("data-student-id");
+                const firstName = selectedStudentRow.getAttribute("data-firstname");
+                const lastName = selectedStudentRow.getAttribute("data-lastname");
+                const course = selectedStudentRow.getAttribute("data-course");
+                const year = selectedStudentRow.getAttribute("data-year");
+                const gender = selectedStudentRow.getAttribute("data-gender");
+
+                // Populate the modal fields
+                document.getElementById("edit_student_id").value = studentId;
+                document.getElementById("edit_firstname").value = firstName;
+                document.getElementById("edit_lastname").value = lastName;
+                document.getElementById("edit_course").value = course;
+                document.getElementById("edit_year").value = year;
+                document.getElementById("edit_gender").value = gender;
+
                 editStudentForm.action = `/students/edit/${selectedStudentId}`;
             }
         });

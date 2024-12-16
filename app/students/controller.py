@@ -61,7 +61,7 @@ def edit_student(student_id):
     
     print("edit_student_model.to_dict: ", edit_student_model.to_dict())
 
-    result = edit_student_model.edit(studentId)
+    result = edit_student_model.edit(student_id)
 
     if result:
         response = jsonify({'message': 'Students updated successfully', 'updated_id': student_id})
