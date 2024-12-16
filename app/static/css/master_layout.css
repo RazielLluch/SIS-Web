@@ -17,7 +17,7 @@ header {
     padding: 15px;
 }
 
-.container {
+.navbar-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -27,17 +27,17 @@ header {
     margin-right: auto;
 }
 
-nav {
+.navbar-nav {
     margin-right: 20px;
 }
 
-nav ul {
+.navbar-nav ul {
     list-style: none;
     display: flex;
     gap: 15px;
 }
 
-nav ul li{
+.navbar-nav ul li{
     color: #ffffff;
     padding-top: 4px;
     padding-bottom: 4px;
@@ -45,16 +45,16 @@ nav ul li{
     padding-right: 12px;
 }
 
-nav ul li.selected{
+.navbar-nav ul li.selected{
     background: #ffffff;
     border-radius: 5px;
 }
 
-nav ul li.selected a{
+.navbar-nav ul li.selected a{
     color: black;
 }
 
-nav a {
+.navbar-nav a {
     color: white;
     text-decoration: none;
     font-size: 1em;

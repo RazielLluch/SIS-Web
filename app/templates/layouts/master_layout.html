@@ -5,30 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} title {% endblock %}</title>
 
-    <!-- Block for styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/master_layout.css') }}">
+
+    <!-- Block for extra styles -->
     {% block extra_css %} {% endblock %}
 </head>
 <body>
 
 <header>
-    <div class="container">
+    <div class="navbar-container">
         <div class="logo">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
         </div>
-        <nav>
+        <nav class="navbar-nav">
             <ul>
                 <li class="{% if title == 'Home' %}selected{% endif %}"><a href="/">Home</a></li>
                 <li class="{% if title == 'Students' %}selected{% endif %}"><a href="{{ url_for('students.index') }}">Students</a></li>
-                <li class="{% if title == 'Courses' %}selected{% endif %}"><a href="#">Courses</a></li>
+                <li class="{% if title == 'Courses' %}selected{% endif %}"><a href="{{ url_for('courses.index') }}">Courses</a></li>
                 <li class="{% if title == 'Colleges' %}selected{% endif %}"><a href="{{ url_for('colleges.index') }}">Colleges</a></li>
-                <li class="{% if title == 'About' %}selected{% endif %}"><a href="#">About</a></li>
+                <li class="{% if title == 'About' %}selected{% endif %}"><a href="https://github.com/RazielLluch/SIS-Web">About</a></li>
             </ul>
         </nav>
-        <div class="auth-buttons">
-            <button class="sign-in">Sign in</button>
-            <button class="sign-out">Sign out</button>
-        </div>
+<!--        <div class="auth-buttons">-->
+<!--            <button class="sign-in">Sign in</button>-->
+<!--            <button class="sign-out">Sign out</button>-->
+<!--        </div>-->
     </div>
 </header>
 
@@ -38,7 +39,15 @@
 
 <!-- Block for scripts -->
 {% block scripts %}
-<!-- Additional scripts for child templates can be added here -->
+
+<script>
+
+    document.getElementById("aboutButton").onclick = function () {
+        location.href = "https://github.com/RazielLluch";
+    };
+
+</script>
+
 {% endblock %}
 
 <footer>

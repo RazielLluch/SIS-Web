@@ -1,20 +1,12 @@
 {% extends "./layouts/master_layout.html" %}
 
+{% block title %} {{ title }} {% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/students.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modals.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    .content {
-        padding: 0 50px 0 50px;
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: flex-end; /* Align buttons to the right */
-        margin-bottom: 1rem; /* Add some space between buttons and table */
-    }
-
     .content {
         padding: 0 50px 0 50px;
     }
@@ -40,19 +32,39 @@
     table thead {
         background-color: #f2f2f2; /* Optional: Highlight table header */
     }
+
+    /* Default hover effect when not selected */
+    tr:hover {
+        background-color: #f1f1f1; /* Light gray hover color for unselected rows */
+    }
+
+    /* Hover effect when the row is selected */
+    tr.selected:hover {
+        background-color: #8cbe9f; /* Slightly darker shade of green for selected rows */
+    }
+
+    /* The color when the row is selected */
+    .selected {
+        background-color: #a3c4b2; /* Slightly darker green when selected */
+    }
+
+    /* Optional: Smooth transition for background color changes */
+    tr {
+        transition: background-color 0.3s ease;
+    }
+
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="content">
-    <div class="buttons">
-        <button id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add</button>
-        <button id="deleteButton" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
-    </div>
 
-    <table>
+    {% include 'layouts/crud_buttons.html' %}
+
+    <table  id="coursesTable">
         <thead>
         <tr>
+            <th></th>
             <th>Course ID</th>
             <th>Course Name</th>
             <th>College</th>
@@ -74,33 +86,20 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addCourseForm">
+                    <form id="addCourseForm" method="POST" action="{{ url_for('courses.add_course') }}">
                         <div class="mb-3">
-                            <label for="course_id" class="form-label">Course ID</label>
-                            <input type="text" class="form-control" id="course_id" name="course_id" required>
+                            <label for="add_course_id" class="form-label">Course ID</label>
+                            <input type="text" class="form-control" id="add_course_id" name="course_id" required>
                         </div>
                         <div class="mb-3">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            <label for="add_coursename" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="add_coursename" name="coursename" required>
                         </div>
                         <div class="mb-3">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="course" class="form-label">Course</label>
-                            <input type="text" class="form-control" id="course" name="course" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="year" class="form-label">Year</label>
-                            <input type="number" class="form-control" id="year" name="year" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="gender" class="form-label">Gender</label>
-                            <select class="form-select" id="gender" name="gender" required>
-                                <option value="" disabled selected>Select gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                            <label for="add_college" class="form-label">College</label>
+                            <select class="form-select" id="add_college" name="college" required>
+                                <option value="" disabled selected>Select College</option>
+                                <option value="CCS">CCS</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -110,21 +109,52 @@
         </div>
     </div>
 
-
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteCourseModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteCourseCourseModalLabel">Delete Course</h5>
+                    <h5 class="modal-title" id="editModalLabel">Add Course</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="deleteCourseForm">
+                    <form id="editCourseForm" method="POST">
                         <div class="mb-3">
-                            <label for="courseId" class="form-label">Course ID</label>
-                            <input type="number" class="form-control" id="courseId" name="courseId" required>
+                            <label for="edit_course_id" class="form-label">Course ID</label>
+                            <input type="text" class="form-control" id="edit_course_id" name="course_id" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="edit_coursename" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="edit_coursename" name="course_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_college" class="form-label">College</label>
+                            <select class="form-select" id="edit_college" name="college" required>
+                                <option value="" disabled selected>Select College</option>
+                                <option value="CCS">CCS</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteCourseForm" method="POST">
+                        <div class="mb-3">
+                        </div>
+                        <input type="hidden" id="courseIds" name="course_ids">
+                        <button type="button" class="btn btn-cancel" data-bs-dismiss="deleteModal">Cancel</button>
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </div>
@@ -136,4 +166,115 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteButton = document.getElementById("deleteButton");
+        const courseRows = document.querySelectorAll("#coursesTable tbody tr");
+        const editButton = document.getElementById("editButton")
+        const deleteForm = document.getElementById("deleteCourseForm");
+        const courseIdsField = document.getElementById("courseIds");
+        const editCourseForm = document.getElementById("editCourseForm");
+
+        function getSelectedCourseRowAndId() {
+            const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
+            if (selectedCheckbox) {
+                const courseRow = selectedCheckbox.closest("tr");
+                return [courseRow, courseRow.querySelector("td:nth-child(2)").textContent.trim()]; // Adjust column index if necessary
+            }
+            return null;
+        }
+
+        editButton.addEventListener("click", function() {
+            const [selectedCourseRow, selectedCourseId] = getSelectedCourseRowAndId();
+            if (selectedCourseId) {
+                const courseId = selectedCourseRow.getAttribute("data-course-id");
+                const courseName = selectedCourseRow.getAttribute("data-course-name");
+                const college = selectedCourseRow.getAttribute("data-college");
+
+                // Populate the modal fields
+                document.getElementById("edit_course_id").value = courseId;
+                document.getElementById("edit_coursename").value = courseName;
+                document.getElementById("edit_college").value = college;
+
+                editCourseForm.action = `/courses/edit/${selectedCourseId}`;
+            }
+        });
+
+        function updateButtonState() {
+            const selectedCheckboxes = document.querySelectorAll(".row-select-checkbox:checked");
+            deleteButton.disabled = selectedCheckboxes.length === 0;
+            editButton.disabled = selectedCheckboxes.length !== 1;
+        }
+
+        courseRows.forEach(row => {
+            const checkbox = row.querySelector(".row-select-checkbox");
+
+            row.addEventListener("click", function(event) {
+                if (event.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+
+                if (checkbox.checked) {
+                    row.classList.add("selected");
+                } else {
+                    row.classList.remove("selected");
+                }
+
+                updateButtonState();
+            });
+
+            checkbox.addEventListener("change", function() {
+                if (checkbox.checked) {
+                    row.classList.add("selected");
+                } else {
+                    row.classList.remove("selected");
+                }
+                updateButtonState();
+            });
+        });
+
+
+        // Handle delete button click
+        deleteButton.addEventListener("click", function() {
+            const selectedRows = document.querySelectorAll(".row-select-checkbox:checked");
+            const selectedIds = Array.from(selectedRows).map(row => row.closest("tr").dataset.courseId);
+            courseIdsField.value = JSON.stringify(selectedIds); // Store as a JSON array
+        });
+
+        // Handle form submission
+        deleteForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const courseIds = JSON.parse(courseIdsField.value);
+            console.log("Deleting courses with IDs:", courseIds);
+
+            alert(`courseIds: ${courseIds}`)
+
+            // Make the backend POST request
+            const response = await fetch(`/courses/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ course_ids: courseIds })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Course deleted successfully with data: ${JSON.stringify(data)}`);
+
+                    // Close the modal
+                    const modal = document.getElementById('deleteCourseModal'); // Replace 'modalId' with the actual modal ID
+                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    if (bootstrapModal) {
+                        bootstrapModal.hide(); // Close the modal
+                    }
+
+                    // Optionally refresh the table or remove the rows
+                    window.location.reload()
+                })
+                .catch(error => {
+                    alert(`Error deleting courses: ${error}`);
+                });
+        });
+    });
+</script>
 {% endblock %}
