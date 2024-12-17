@@ -5,16 +5,11 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/students.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/modals.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/crud_buttons.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
     .content {
         padding: 0 50px 0 50px;
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: flex-end; /* Align buttons to the right */
-        margin-bottom: 1rem; /* Add some space between buttons and table */
     }
 
     table {
@@ -90,7 +85,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addStudentForm" method="POST" action="{{ url_for('students.add_student') }}">
+                    <form id="addStudentForm" method="POST" action="{{ url_for('students.add_student') }}" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="student_id" class="form-label">ID Number(yyyy-nnnn)</label>
                             <input type="text" class="form-control" id="student_id" name="student_id" required>
@@ -126,29 +121,11 @@
                                 <option value="Female">Female</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Delete Student</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="deleteStudentForm" method="POST">
                         <div class="mb-3">
+                            <label for="add_student_image" class="form-label">Upload New Profile Picture</label>
+                            <input type="file" class="form-control" id="add_student_image" name="add_student_image" accept="image/*">
                         </div>
-                        <input type="hidden" id="studentIds" name="student_ids">
-                        <button type="button" class="btn btn-cancel" data-bs-dismiss="deleteModal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>
@@ -164,7 +141,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editStudentForm" method="POST">
+                    <form id="editStudentForm" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="edit_student_id" class="form-label">ID Number(yyyy-nnnn)</label>
                             <input type="text" class="form-control" id="edit_student_id" name="student_id" required>
@@ -178,8 +155,10 @@
                             <input type="text" class="form-control" id="edit_lastname" name="lastname" required>
                         </div>
                         <div class="mb-3">
-                            <label for="course" class="form-label">Course</label>
-                            <input type="text" class="form-control" id="edit_course" name="course" required>
+                            <label for="edit_course" class="form-label">Course</label>
+                            <select class="form-select" id="edit_course" name="course" required>
+                                <option value="" disabled selected>Select Year Level</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="edit_year" class="form-label">Year</label>
@@ -200,12 +179,20 @@
                                 <option value="female">Female</option>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="edit_student_image" class="form-label">Upload New Profile Picture</label>
+                            <input type="file" class="form-control" id="edit_student_image" name="edit_student_image" accept="image/*">
+                        </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Delete Modal -->
+    {% set delete_modal_type = "student" %}
+    {% include 'layouts/crud_modals/delete_modal.html' %}
 
 </div>
 {% endblock %}
@@ -230,9 +217,7 @@
             return null;
         }
 
-
-
-        editButton.addEventListener("click", function() {
+        editButton.addEventListener("click", async function() {
             const [selectedStudentRow, selectedStudentId] = getSelectedStudentRowAndId();
             if (selectedStudentId) {
                 const studentId = selectedStudentRow.getAttribute("data-student-id");
@@ -241,6 +226,29 @@
                 const course = selectedStudentRow.getAttribute("data-course");
                 const year = selectedStudentRow.getAttribute("data-year");
                 const gender = selectedStudentRow.getAttribute("data-gender");
+
+                const response = await fetch('/courses/get'); // Replace with the correct URL endpoint
+                if (response.ok) {
+                    const courses = await response.json(); // Assuming the response contains a list of courses
+
+                    const courseSelect = document.getElementById("edit_course");
+
+                    // Clear existing options
+                    courseSelect.innerHTML = `<option value="" disabled selected>${course}</option>`;
+
+                    // Populate new options
+                    courses.forEach(courseData => {
+                        const option = document.createElement("option");
+                        option.value = courseData.id;  // Assuming the course object has an `id` field
+                        option.textContent = courseData.id;  // Assuming the course object has a `name` field
+                        courseSelect.appendChild(option);
+                    });
+
+                    // Optionally, set the current course if needed
+                    courseSelect.value = course;  // If `course` holds the selected course value
+                } else {
+                    alert('Failed to fetch courses');
+                }
 
                 // Populate the modal fields
                 document.getElementById("edit_student_id").value = studentId;

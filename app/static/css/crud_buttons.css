@@ -1,0 +1,6 @@
+.buttons {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    margin: 1rem 0 1rem 0; /* Add some space between buttons and table */
+    column-gap: 10px;
+}
