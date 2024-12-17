@@ -1,3 +1,5 @@
+import cloudinary
+import cloudinary.uploader
 from flask import render_template, redirect, request, jsonify, url_for, flash
 from . import students_bp
 from ..models.student_model import StudentModel
@@ -22,7 +24,20 @@ def add_student():
     course = request.form.get('course')
     year = request.form.get('year')
     gender = request.form.get('gender')
-    # profile_picture_url = request.form.get('profile_picture_url'),
+    profile_picture = request.files.get('add_student_image')
+
+    print("profile picture: ", profile_picture)
+    profile_picture_url = None
+    if profile_picture:
+        try:
+            print("trying cloudinary")
+            upload_picture = cloudinary.uploader.upload(profile_picture, folder="student_profile_pictures")
+            profile_picture_url = upload_picture.get('url')
+            print("profile_picture_url: ", profile_picture_url)
+        except Exception as e:
+            print(f"Upload failed :{str(e)}")
+    else:
+        print("No profile picture uploaded.")
 
     new_student_model = StudentModel(
         student_id=id,
@@ -31,7 +46,7 @@ def add_student():
         course=course,
         year=year,
         gender=gender,
-        # profile_picture_url=profile_picture_url,
+        profile_picture_url=profile_picture_url
     )
 
     new_student_model.add()
@@ -47,8 +62,20 @@ def edit_student(student_id):
     course = request.form.get('course')
     year = request.form.get('year')
     gender = request.form.get('gender')
+    profile_picture = request.files.get('edit_student_image')
 
-    # print("request data: ", data)
+    print("profile picture: ", profile_picture)
+    profile_picture_url = None
+    if profile_picture:
+        try:
+            print("trying cloudinary")
+            upload_picture = cloudinary.uploader.upload(profile_picture, folder="student_profile_pictures")
+            profile_picture_url = upload_picture.get('url')
+            print("profile_picture_url: ", profile_picture_url)
+        except Exception as e:
+            print(f"Upload failed :{str(e)}")
+    else:
+        print("No profile picture uploaded.")
 
     edit_student_model = StudentModel(
         student_id=student_id,
@@ -57,6 +84,7 @@ def edit_student(student_id):
         course=course,
         year=year,
         gender=gender,
+        profile_picture_url=profile_picture_url
     )
     
     print("edit_student_model.to_dict: ", edit_student_model.to_dict())
@@ -95,3 +123,15 @@ def delete_student():
         response = jsonify({'message': result, 'deleted_ids': student_ids})
         print(response.get_json())
         return response
+
+@students_bp.route('/students/upload', methods=['POST'])
+def upload_photo():
+    image_file = request.files['file']
+
+    image_url = None
+
+
+    # student_model = StudentModel(
+    #     student_id=,
+    #
+    # )
