@@ -167,7 +167,6 @@
             if (response.ok) {
                 const colleges = await response.json(); // Assuming the response contains a list of colleges
 
-                alert(colleges)
                 const collegeSelect = document.getElementById("add_college");
 
                 // Clear existing options
@@ -181,7 +180,7 @@
                     collegeSelect.appendChild(option);
                 });
             } else {
-                alert('Failed to fetch courses');
+                alert('Failed to fetch colleges');
             }
 
             addCourseForm.action = `/courses/add`;
@@ -272,8 +271,6 @@
             e.preventDefault();
             const courseIds = JSON.parse(courseIdsField.value);
             console.log("Deleting courses with IDs:", courseIds);
-
-            alert(`courseIds: ${courseIds}`)
 
             // Make the backend POST request
             const response = await fetch(`/courses/delete`, {

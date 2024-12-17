@@ -99,8 +99,10 @@
                             <input type="text" class="form-control" id="lastname" name="lastname" required>
                         </div>
                         <div class="mb-3">
-                            <label for="course" class="form-label">Course</label>
-                            <input type="text" class="form-control" id="course" name="course" required>
+                            <label for="add_course" class="form-label">Course</label>
+                            <select class="form-select" id="add_course" name="course" required>
+                                <option value="" disabled selected>Select Course</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="add_year" class="form-label">Year</label>
@@ -157,7 +159,7 @@
                         <div class="mb-3">
                             <label for="edit_course" class="form-label">Course</label>
                             <select class="form-select" id="edit_course" name="course" required>
-                                <option value="" disabled selected>Select Year Level</option>
+                                <option value="" disabled selected>Select Course</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -203,10 +205,12 @@
     document.addEventListener("DOMContentLoaded", function() {
         const deleteButton = document.getElementById("deleteButton");
         const studentRows = document.querySelectorAll("#studentsTable tbody tr");
+        const addButton = document.getElementById("addButton")
         const editButton = document.getElementById("editButton")
         const deleteForm = document.getElementById("deleteStudentForm");
         const studentIdsField = document.getElementById("studentIds");
         const editStudentForm = document.getElementById("editStudentForm");
+        const addStudentForm = document.getElementById("editStudentForm");
 
         function getSelectedStudentRowAndId() {
             const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
@@ -216,6 +220,30 @@
             }
             return null;
         }
+
+        addButton.addEventListener("click", async function() {
+            const response = await fetch('/courses/get'); // Replace with the correct URL endpoint
+            if (response.ok) {
+                const courses = await response.json(); // Assuming the response contains a list of colleges
+
+                const courseSelect = document.getElementById("add_course");
+
+                // Clear existing options
+                courseSelect.innerHTML = `<option value="" disabled selected>Select Course</option>`;
+
+                // Populate new options
+                courses.forEach(courseData => {
+                    const option = document.createElement("option");
+                    option.value = courseData.id;  // Assuming the college object has an `id` field
+                    option.textContent = courseData.id;  // Assuming the college object has a `name` field
+                    courseSelect.appendChild(option);
+                });
+            } else {
+                alert('Failed to fetch courses');
+            }
+
+            addStudentForm.action = `/students/add`;
+        });
 
         editButton.addEventListener("click", async function() {
             const [selectedStudentRow, selectedStudentId] = getSelectedStudentRowAndId();
@@ -311,8 +339,6 @@
             e.preventDefault();
             const studentIds = JSON.parse(studentIdsField.value);
             console.log("Deleting students with IDs:", studentIds);
-
-            alert(`studentIds: ${studentIds}`)
 
             // Make the backend POST request
             const response = await fetch(`/students/delete`, {
