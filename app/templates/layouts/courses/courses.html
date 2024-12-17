@@ -81,7 +81,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addCourseForm" method="POST" action="{{ url_for('courses.add_course') }}">
+                    <form id="addCourseForm" method="POST">
                         <div class="mb-3">
                             <label for="add_course_id" class="form-label">Course ID</label>
                             <input type="text" class="form-control" id="add_course_id" name="course_id" required>
@@ -94,7 +94,6 @@
                             <label for="add_college" class="form-label">College</label>
                             <select class="form-select" id="add_college" name="college" required>
                                 <option value="" disabled selected>Select College</option>
-                                <option value="CCS">CCS</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -126,7 +125,6 @@
                             <label for="edit_college" class="form-label">College</label>
                             <select class="form-select" id="edit_college" name="college" required>
                                 <option value="" disabled selected>Select College</option>
-                                <option value="CCS">CCS</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Edit</button>
@@ -148,10 +146,12 @@
     document.addEventListener("DOMContentLoaded", function() {
         const deleteButton = document.getElementById("deleteButton");
         const courseRows = document.querySelectorAll("#coursesTable tbody tr");
+        const addButton = document.getElementById("addButton")
         const editButton = document.getElementById("editButton")
         const deleteForm = document.getElementById("deleteCourseForm");
         const courseIdsField = document.getElementById("courseIds");
         const editCourseForm = document.getElementById("editCourseForm");
+        const addCourseForm = document.getElementById("addCourseForm");
 
         function getSelectedCourseRowAndId() {
             const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
@@ -162,12 +162,60 @@
             return null;
         }
 
-        editButton.addEventListener("click", function() {
+        addButton.addEventListener("click", async function() {
+            const response = await fetch('/colleges/get'); // Replace with the correct URL endpoint
+            if (response.ok) {
+                const colleges = await response.json(); // Assuming the response contains a list of colleges
+
+                alert(colleges)
+                const collegeSelect = document.getElementById("add_college");
+
+                // Clear existing options
+                collegeSelect.innerHTML = `<option value="" disabled selected>Select College</option>`;
+
+                // Populate new options
+                colleges.forEach(collegeData => {
+                    const option = document.createElement("option");
+                    option.value = collegeData.id;  // Assuming the college object has an `id` field
+                    option.textContent = collegeData.id;  // Assuming the college object has a `name` field
+                    collegeSelect.appendChild(option);
+                });
+            } else {
+                alert('Failed to fetch courses');
+            }
+
+            addCourseForm.action = `/courses/add`;
+        });
+
+        editButton.addEventListener("click", async function() {
             const [selectedCourseRow, selectedCourseId] = getSelectedCourseRowAndId();
             if (selectedCourseId) {
                 const courseId = selectedCourseRow.getAttribute("data-course-id");
                 const courseName = selectedCourseRow.getAttribute("data-course-name");
                 const college = selectedCourseRow.getAttribute("data-college");
+
+                const response = await fetch('/colleges/get'); // Replace with the correct URL endpoint
+                if (response.ok) {
+                    const colleges = await response.json(); // Assuming the response contains a list of colleges
+
+                    const collegeSelect = document.getElementById("edit_college");
+
+                    // Clear existing options
+                    collegeSelect.innerHTML = `<option value="" disabled selected>${college}</option>`;
+
+                    // Populate new options
+                    colleges.forEach(collegeData => {
+                        const option = document.createElement("option");
+                        option.value = collegeData.id;  // Assuming the college object has an `id` field
+                        option.textContent = collegeData.id;  // Assuming the college object has a `name` field
+                        collegeSelect.appendChild(option);
+                    });
+
+                    // Optionally, set the current course if needed
+                    collegeSelect.value = college;  // If `course` holds the selected course value
+                } else {
+                    alert('Failed to fetch courses');
+                }
 
                 // Populate the modal fields
                 document.getElementById("edit_course_id").value = courseId;
