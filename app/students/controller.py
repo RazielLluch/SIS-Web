@@ -54,8 +54,8 @@ def add_student():
     return redirect(url_for('students.index'))
 
 
-@students_bp.route('/students/edit/<student_id>', methods=['POST'])
-def edit_student(student_id):
+@students_bp.route('/students/edit/<basis_student_id>', methods=['POST'])
+def edit_student(basis_student_id):
     student_id = request.form.get('student_id')
     firstname = request.form.get('firstname')
     lastname = request.form.get('lastname')
@@ -89,14 +89,14 @@ def edit_student(student_id):
     
     print("edit_student_model.to_dict: ", edit_student_model.to_dict())
 
-    result = edit_student_model.edit(student_id)
+    result = edit_student_model.edit(basis_student_id)
 
     if result:
         response = jsonify({'message': 'Students updated successfully', 'updated_id': student_id})
         print(response.get_json())
         return redirect(url_for('students.index'))
     else:
-        response = jsonify({'message': result, 'edit_id': student_id})
+        response = jsonify({'message': result, 'edit_id': basis_student_id})
         print(response.get_json())
         return response
 
