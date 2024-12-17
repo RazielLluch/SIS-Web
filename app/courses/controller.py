@@ -85,5 +85,4 @@ def delete_course():
 def get_courses():
     courses = course_model.fetch_all_courses()
 
-    print("courses: ", courses)
     return courses

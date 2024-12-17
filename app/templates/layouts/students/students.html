@@ -85,7 +85,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addStudentForm" method="POST" action="{{ url_for('students.add_student') }}" enctype="multipart/form-data">
+                    <form id="addStudentForm" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="student_id" class="form-label">ID Number(yyyy-nnnn)</label>
                             <input type="text" class="form-control" id="student_id" name="student_id" required>
