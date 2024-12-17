@@ -75,3 +75,11 @@ def delete_college():
         response = jsonify({'message': result, 'deleted_ids': college_ids})
         print(response.get_json())
         return response
+
+
+@colleges_bp.route('/colleges/get', methods=['GET'])
+def get_courses():
+    courses = college_model.fetch_all_courses()
+
+    print("courses: ", courses)
+    return courses
