@@ -208,8 +208,6 @@
             const collegeIds = JSON.parse(collegeIdsField.value);
             console.log("Deleting colleges with IDs:", collegeIds);
 
-            alert(`collegeIds: ${collegeIds}`)
-
             // Make the backend POST request
             const response = await fetch(`/colleges/delete`, {
                 method: 'POST',

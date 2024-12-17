@@ -81,5 +81,4 @@ def delete_college():
 def get_courses():
     courses = college_model.fetch_all_courses()
 
-    print("courses: ", courses)
     return courses
