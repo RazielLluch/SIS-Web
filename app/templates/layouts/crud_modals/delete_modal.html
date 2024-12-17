@@ -2,14 +2,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Delete College</h5>
+        <h5 class="modal-title" id="deleteModalLabel">Delete {{ delete_modal_type | capitalize }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="deleteCollegeForm" method="POST">
+        <form id="delete{{ delete_modal_type | capitalize }}Form" method="POST">
           <div class="mb-3">
           </div>
-          <input type="hidden" id="{{ type }}Ids" name="{{ type }}_ids">
+          <input type="hidden" id="{{ delete_modal_type }}Ids" name="{{ delete_modal_type }}_ids">
           <button type="button" class="btn btn-cancel" data-bs-dismiss="deleteModal">Cancel</button>
           <button type="submit" class="btn btn-danger">Delete</button>
         </form>
