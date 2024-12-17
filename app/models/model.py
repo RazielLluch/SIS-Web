@@ -101,7 +101,7 @@ class Model:
         self.db, self.cur = connect_db()
 
         data = self.sanitize_data(data)
-    
+
         set_clauses = ', '.join([f"{key}=%s" for key in data.keys()])
         condition_clauses = ' AND '.join([f"{key}=%s" for key in conditions.keys()])
         query = f"UPDATE {table_name} SET {set_clauses} WHERE {condition_clauses}"
@@ -124,9 +124,9 @@ class Model:
         :param values: List of values for the IN clause.
         :return: True if successful, or the error message if unsuccessful.
         """
-        
+
         self.db, self.cur = connect_db()
-        
+
         placeholders = ', '.join(['%s'] * len(values))  # Create placeholders for each value
         query = f"DELETE FROM {table_name} WHERE {column} IN ({placeholders})"
         params = tuple(values)

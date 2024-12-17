@@ -155,8 +155,10 @@
                             <input type="text" class="form-control" id="edit_lastname" name="lastname" required>
                         </div>
                         <div class="mb-3">
-                            <label for="course" class="form-label">Course</label>
-                            <input type="text" class="form-control" id="edit_course" name="course" required>
+                            <label for="edit_course" class="form-label">Course</label>
+                            <select class="form-select" id="edit_course" name="course" required>
+                                <option value="" disabled selected>Select Year Level</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="edit_year" class="form-label">Year</label>
@@ -215,9 +217,7 @@
             return null;
         }
 
-
-
-        editButton.addEventListener("click", function() {
+        editButton.addEventListener("click", async function() {
             const [selectedStudentRow, selectedStudentId] = getSelectedStudentRowAndId();
             if (selectedStudentId) {
                 const studentId = selectedStudentRow.getAttribute("data-student-id");
@@ -226,6 +226,29 @@
                 const course = selectedStudentRow.getAttribute("data-course");
                 const year = selectedStudentRow.getAttribute("data-year");
                 const gender = selectedStudentRow.getAttribute("data-gender");
+
+                const response = await fetch('/courses/get'); // Replace with the correct URL endpoint
+                if (response.ok) {
+                    const courses = await response.json(); // Assuming the response contains a list of courses
+
+                    const courseSelect = document.getElementById("edit_course");
+
+                    // Clear existing options
+                    courseSelect.innerHTML = `<option value="" disabled selected>${course}</option>`;
+
+                    // Populate new options
+                    courses.forEach(courseData => {
+                        const option = document.createElement("option");
+                        option.value = courseData.id;  // Assuming the course object has an `id` field
+                        option.textContent = courseData.id;  // Assuming the course object has a `name` field
+                        courseSelect.appendChild(option);
+                    });
+
+                    // Optionally, set the current course if needed
+                    courseSelect.value = course;  // If `course` holds the selected course value
+                } else {
+                    alert('Failed to fetch courses');
+                }
 
                 // Populate the modal fields
                 document.getElementById("edit_student_id").value = studentId;
