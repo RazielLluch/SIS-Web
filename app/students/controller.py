@@ -104,9 +104,6 @@ def edit_student(basis_student_id):
 
     result = edit_student_model.edit(basis_student_id)
 
-    if result:
-        response = jsonify({'message': 'Students updated successfully', 'updated_id': student_id})
-        print(response.get_json())
     if result == True:
         flash("Student updated successfully")
         return redirect(url_for('students.index'))

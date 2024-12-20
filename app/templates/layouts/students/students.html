@@ -272,6 +272,29 @@
             const flashMessageModal = new bootstrap.Modal(document.getElementById('flashMessageModal'));
             flashMessageModal.show();
         }
+
+        // Define validation logic
+        function validateStudentId(inputElement) {
+            const value = inputElement.value.trim();
+            const regex = /^(19[6-9]\d|20[0-2]\d|2025)-\d{4}$/; // Matches yyyy-nnnn with yyyy between 1961 and 2025
+            if (!regex.test(value)) {
+                inputElement.setCustomValidity("Invalid ID format. Ensure 'yyyy' is between 1961 and 2025 and follows 'yyyy-nnnn'.");
+            } else {
+                inputElement.setCustomValidity("");
+            }
+        }
+
+        // Attach validation to Add Modal
+        const addStudentIdInput = document.getElementById("student_id");
+        addStudentIdInput.addEventListener("input", function () {
+            validateStudentId(addStudentIdInput);
+        });
+
+        // Attach validation to Edit Modal
+        const editStudentIdInput = document.getElementById("edit_student_id");
+        editStudentIdInput.addEventListener("input", function () {
+            validateStudentId(editStudentIdInput);
+        });
     });
 </script>
 
