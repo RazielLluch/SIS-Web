@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, jsonify, url_for
+from flask import render_template, redirect, request, jsonify, url_for, flash
 from . import colleges_bp
 from ..models.college_model import CollegeModel
 
@@ -20,7 +20,22 @@ def add_college():
         name=college_name,
     )
 
-    new_college_model.add()
+    try:
+        new_college_model.add()
+    except Exception as e:
+        print(f"Add failed :{str(e)}")
+
+        error_message = str(e)
+
+        # Check if the error message contains both 'Duplicate entry' and 'course.name'
+        if 'Duplicate entry' in error_message and 'college.name' in error_message:
+            flash("College with that name already exists")
+        elif 'Duplicate entry' in error_message and 'college.PRIMARY' in error_message:
+            flash("College with that ID already exists")
+        else:
+            flash("Unexpected error")
+
+        return redirect(url_for('colleges.index'))
 
     return redirect(url_for('colleges.index'))
 
