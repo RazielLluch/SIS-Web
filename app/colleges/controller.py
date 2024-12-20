@@ -53,7 +53,9 @@ def edit_college(basis_college_id):
     print("edit_college_model.to_dict: ", edit_college_model.to_dict())
     result = edit_college_model.edit(basis_college_id)
 
-    if result:
+    print("result: ", result)
+
+    if result == True:
         response = jsonify(
             {
                 'message': 'Students updated successfully',
@@ -61,11 +63,18 @@ def edit_college(basis_college_id):
                 'updated_id': college_id}
         )
         print(response.get_json())
+        flash("College edited successfully")
         return redirect(url_for('colleges.index'))
+    if 'Duplicate entry' in result and 'college.PRIMARY' in result:
+        flash("College with that ID already exists")
+        return redirect(url_for('colleges.index'))
+    elif 'Duplicate entry' in result and 'college.name' in result:
+        flash("College with that name already exists")
     else:
         response = jsonify({'message': result, 'basis_id': basis_college_id})
         print(response.get_json())
-        return response
+        flash("Unexpected error")
+    return redirect(url_for('colleges.index'))
 
 
 @colleges_bp.route('/colleges/delete', methods=['POST'])
