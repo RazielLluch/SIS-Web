@@ -107,11 +107,13 @@
                     <form id="addCollegeForm" method="POST" action="{{ url_for('colleges.add_college') }}">
                         <div class="mb-3">
                             <label for="add_college_id" class="form-label">College ID</label>
-                            <input type="text" class="form-control" id="add_college_id" name="college_id" required>
+                            <input type="text" class="form-control" id="add_college_id" name="college_id" required oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
+>
                         </div>
                         <div class="mb-3">
                             <label for="add_collegename" class="form-label">College Name</label>
-                            <input type="text" class="form-control" id="add_collegename" name="collegename" required>
+                            <input type="text" class="form-control" id="add_collegename" name="collegename" required oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
+>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -132,11 +134,13 @@
                     <form id="editCollegeForm" method="POST">
                         <div class="mb-3">
                             <label for="edit_college_id" class="form-label">College ID</label>
-                            <input type="text" class="form-control" id="edit_college_id" name="college_id" required>
+                            <input type="text" class="form-control" id="edit_college_id" name="college_id" required oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
+>
                         </div>
                         <div class="mb-3">
                             <label for="edit_collegename" class="form-label">College Name</label>
-                            <input type="text" class="form-control" id="edit_collegename" name="college_name" required>
+                            <input type="text" class="form-control" id="edit_collegename" name="college_name" required oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
+>
                         </div>
                         <button type="submit" class="btn btn-primary">Edit</button>
                     </form>
