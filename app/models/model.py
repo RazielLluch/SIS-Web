@@ -69,6 +69,8 @@ class Model:
             result = self.cur.lastrowid
             print("result: ", result)
             return result
+        except Exception as e:
+            raise e
         finally:
             self.cur.close()
 

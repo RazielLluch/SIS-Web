@@ -38,15 +38,21 @@ class StudentModel(Model):
     #     return self.read(self.table_name)
 
     def add(self):
-        self.create(
-            self.table_name,
-            self.to_dict()
-        )
+        try:
+            self.create(
+                self.table_name,
+                self.to_dict()
+            )
+        except Exception as e:
+            raise e
+
 
     def edit(self, basis_id):
         self_dict = self.to_dict()
+        if self.profile_picture_url is None:
+            self_dict.pop('profile_picture_url')
 
-        print("self_dict: ", self_dict)
+        print(self_dict)
 
         return self.update(
             self.table_name,
@@ -60,3 +66,5 @@ class StudentModel(Model):
             'id',
             student_ids
         )
+
+    # def is_valid_id
