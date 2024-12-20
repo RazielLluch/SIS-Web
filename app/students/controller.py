@@ -52,8 +52,17 @@ def add_student():
     try:
         new_student_model.add()
     except Exception as e:
-        print(f"Add failed :{str(e)}")
-        flash("Student with that ID already exists")
+
+        error_message = str(e)
+
+        print(f"Add failed :{error_message}")
+
+        # Check if the error message contains both 'Duplicate entry' and 'course.name'
+        if 'Duplicate entry' in error_message and 'student.PRIMARY' in error_message:
+            flash("Course with that name already exists")
+        else:
+            flash("Unexpected error")
+
         return redirect(url_for('students.index'))
     return redirect(url_for('students.index'))
 
