@@ -107,11 +107,14 @@ def edit_student(basis_student_id):
     if result:
         response = jsonify({'message': 'Students updated successfully', 'updated_id': student_id})
         print(response.get_json())
+    if result == True:
+        flash("Student updated successfully")
         return redirect(url_for('students.index'))
+    elif 'Duplicate entry' in result and 'student.PRIMARY' in result:
+        flash("Student with that ID already exists")
     else:
-        response = jsonify({'message': result, 'edit_id': basis_student_id})
-        print(response.get_json())
-        return response
+        flash("Unexpected error")
+    return redirect(url_for('students.index'))
 
 
 @students_bp.route('/students/delete', methods=['POST'])

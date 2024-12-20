@@ -64,7 +64,10 @@ def edit_course(basis_course_id):
         flash("Course with that ID already exists")
     elif 'Duplicate entry' in result and 'course.name' in result:
         flash("Course with that name already exists")
+    else:
+        flash("Unexpected error")
     return redirect(url_for('courses.index'))
+
 
 @courses_bp.route('/courses/delete', methods=['POST'])
 def delete_course():
