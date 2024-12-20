@@ -48,6 +48,45 @@
         transition: background-color 0.3s ease;
     }
 
+    .photo-thumbnail {
+        border-radius: 100%;
+        background: lightgray;
+    }
+
+    /* Ensures the enlarged photo is hidden by default */
+    .photo-enlarged {
+        display: none;
+        position: absolute; /* Position it over the original image */
+        border-radius: 100%;
+        background: lightgray;
+        z-index: 10;
+        top: 0;
+        left: 0;
+    }
+
+    .photo-container {
+        position: relative; /* Relative positioning for the hover effect */
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .photo-container:hover .photo-enlarged {
+        display: block; /* Show enlarged image on hover */
+    }
+
+    .photo-container .photo-thumbnail {
+        width: 50px; /* Example thumbnail size */
+        height: 50px;
+    }
+
+    .photo-container .photo-enlarged img {
+        width: 170px; /* Example enlarged image size */
+        height: 170px;
+        border-radius: 100%;
+        background: lightgray;
+        z-index: 100;
+        object-fit: cover;
+    }
 
 </style>
 {% endblock %}

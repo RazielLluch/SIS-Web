@@ -45,8 +45,10 @@ class StudentModel(Model):
 
     def edit(self, basis_id):
         self_dict = self.to_dict()
+        if self.profile_picture_url is None:
+            self_dict.pop('profile_picture_url')
 
-        print("self_dict: ", self_dict)
+        print(self_dict)
 
         return self.update(
             self.table_name,
