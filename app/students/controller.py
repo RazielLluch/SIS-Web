@@ -49,8 +49,12 @@ def add_student():
         profile_picture_url=profile_picture_url
     )
 
-    new_student_model.add()
-
+    try:
+        new_student_model.add()
+    except Exception as e:
+        print(f"Add failed :{str(e)}")
+        flash("Student with that ID already exists")
+        return redirect(url_for('students.index'))
     return redirect(url_for('students.index'))
 
 
