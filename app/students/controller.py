@@ -49,8 +49,21 @@ def add_student():
         profile_picture_url=profile_picture_url
     )
 
-    new_student_model.add()
+    try:
+        new_student_model.add()
+    except Exception as e:
 
+        error_message = str(e)
+
+        print(f"Add failed :{error_message}")
+
+        # Check if the error message contains both 'Duplicate entry' and 'course.name'
+        if 'Duplicate entry' in error_message and 'student.PRIMARY' in error_message:
+            flash("Course with that name already exists")
+        else:
+            flash("Unexpected error")
+
+        return redirect(url_for('students.index'))
     return redirect(url_for('students.index'))
 
 
@@ -91,14 +104,14 @@ def edit_student(basis_student_id):
 
     result = edit_student_model.edit(basis_student_id)
 
-    if result:
-        response = jsonify({'message': 'Students updated successfully', 'updated_id': student_id})
-        print(response.get_json())
+    if result == True:
+        flash("Student updated successfully")
         return redirect(url_for('students.index'))
+    elif 'Duplicate entry' in result and 'student.PRIMARY' in result:
+        flash("Student with that ID already exists")
     else:
-        response = jsonify({'message': result, 'edit_id': basis_student_id})
-        print(response.get_json())
-        return response
+        flash("Unexpected error")
+    return redirect(url_for('students.index'))
 
 
 @students_bp.route('/students/delete', methods=['POST'])
