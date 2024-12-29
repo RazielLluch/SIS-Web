@@ -1,3 +1,5 @@
+from math import ceil
+
 import cloudinary
 import cloudinary.uploader
 from flask import render_template, redirect, request, jsonify, url_for, flash
@@ -11,10 +13,31 @@ s_model = StudentModel()
 # from app.user.forms import UserForm
 
 
+# Assuming you are using SQLAlchemy and have a Student model
 @students_bp.route('/students')
 def index():
-    return render_template('layouts/students/students.html', title='Students', students=s_model.fetch_all())
 
+    page = request.args.get('page', 1, type=int)
+
+    print("Page: ", page)
+
+    per_page = 25  # Number of students per page
+
+    total_pages = ceil(s_model.count_all() / per_page)  # Total pages
+
+    if page > total_pages:
+        return redirect(url_for('students.index', page=1))
+
+    students = s_model.fetch_paginated(page, per_page)
+
+    print("total pages", total_pages)
+
+    print("students: ", students)
+
+    return render_template('layouts/students/students.html',
+                           students=students,
+                           page=page,
+                           total_pages=total_pages)
 
 @students_bp.route('/students/add', methods=['POST'])
 def add_student():
