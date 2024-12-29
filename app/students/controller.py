@@ -9,12 +9,8 @@ from ..models.student_model import StudentModel
 s_model = StudentModel()
 
 
-# import app.models as models
-# from app.user.forms import UserForm
-
-
-# Assuming you are using SQLAlchemy and have a Student model
 @students_bp.route('/students')
+@students_bp.route('/students/')
 def index():
 
     page = request.args.get('page', 1, type=int)
@@ -129,7 +125,7 @@ def edit_student(basis_student_id):
 
     if result == True:
         flash("Student updated successfully")
-        return redirect(url_for('students.index'))
+        return redirect(request.referrer or url_for('students.index'))
     elif 'Duplicate entry' in result and 'student.PRIMARY' in result:
         flash("Student with that ID already exists")
     else:
