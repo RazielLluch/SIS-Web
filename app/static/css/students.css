@@ -17,12 +17,6 @@ table {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-th, td {
-    color: black;
-    padding: 10px;
-    text-align: left;
-}
-
 th {
     background-color: #297A28;
     color: white;
@@ -41,7 +35,7 @@ tr:hover {
     justify-content: center;
     align-items: center;
     gap: 5px;
-    margin: 20px 0;
+    margin: 20px 0 0 0;
 }
 
 .page-link {
@@ -105,4 +99,21 @@ tr:hover {
         font-size: 12px;
         padding: 6px 10px;
     }
+}
+
+.table-container {
+    max-height: 690px; /* Set a fixed height as per your layout */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+}
+
+#studentsTable {
+    width: 100%;
+    border-collapse: collapse; /* Optional: To remove space between table borders */
+}
+
+#studentsTable th, #studentsTable td {
+    padding: 8px 12px; /* Add some padding to the table cells */
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Optional: Add bottom border to each row */
 }
