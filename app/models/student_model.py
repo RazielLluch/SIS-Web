@@ -62,6 +62,13 @@ class StudentModel(Model):
     # Method to fetch students with pagination
     def fetch_paginated(self, page=1, per_page=10):
         try:
+            # Close previous connections if any
+            self.db.close()
+            self.cur.close()
+
+            # Reconnect to the database
+            self.db, self.cur = connect_db()
+
             # Calculate the offset based on page and per_page
             offset = (page - 1) * per_page
 
@@ -70,19 +77,33 @@ class StudentModel(Model):
                 SELECT * FROM {self.table_name}
                 LIMIT {per_page} OFFSET {offset}
             """
-            students_query = self.cur.execute(query)  # Execute the query to fetch paginated results
 
-            students = students_query.fetchall()
+            print(f'query: {query}')
+
+            # Execute the query
+            self.cur.execute(query)
+
+            # Fetch the results from the cursor
+            students = self.cur.fetchall()
 
             print(f'per_page = {per_page}, offset = {offset}')
             print(f'students = {students}')
 
-            # Convert rows into a list of Student objects
-            student_objects = [self.__class__(**student) for student in students]
-            return student_objects
+            # # Convert rows into a list of Student objects
+            # student_objects = [
+            #     self.__class__(student_id=student[0], firstname=student[1], lastname=student[2],
+            #                    course=student[3], year=student[4], gender=student[5], profile_picture_url=student[6])
+            #     for student in students
+            # ]
+            # return student_objects
+            return students
         except Exception as e:
             print(f"Error fetching paginated students: {e}")
             return []
+        finally:
+            # Close connections
+            self.db.close()
+            self.cur.close()
 
     def add(self):
         try:
