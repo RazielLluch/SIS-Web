@@ -8,8 +8,18 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/crud_buttons.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
+
+    header{
+        flex: 1;
+    }
+
     .content {
-        padding: 0 50px 0 50px;
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 50px 50px 50px;
     }
 
     table {
@@ -120,24 +130,56 @@
 
     {% include 'layouts/crud_buttons.html' %}
 
-    <table id="studentsTable">
-        <thead>
-        <tr>
-            <th></th>
-            <th>Id</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Course</th>
-            <th>Year</th>
-            <th>Gender</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for student in students %}
-        {% include 'layouts/students/student_row.html' %}
+    <div class="table-container">
+        <table id="studentsTable">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Course</th>
+                <th>Year</th>
+                <th>Gender</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for student in students %}
+            {% include 'layouts/students/student_row.html' %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('students.index', page=page-1) }}" class="page-link">Previous</a>
+        {% endif %}
+
+        {% if page > 3 %}
+            <a href="{{ url_for('students.index', page=1) }}" class="page-link">1</a>
+            <span class="page-ellipsis">...</span>
+        {% endif %}
+
+        {% for i in range(page - 2, page + 3) %}
+            {% if i > 0 and i <= total_pages %}
+                <a href="{{ url_for('students.index', page=i) }}" class="page-link {% if i == page %}active{% endif %}">
+                    {{ i }}
+                </a>
+            {% endif %}
         {% endfor %}
-        </tbody>
-    </table>
+
+        {% if page < total_pages - 2 %}
+            <span class="page-ellipsis">...</span>
+            <a href="{{ url_for('students.index', page=total_pages) }}" class="page-link">{{ total_pages }}</a>
+        {% endif %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('students.index', page=page+1) }}" class="page-link">Next</a>
+        {% endif %}
+    </div>
 
     <!-- Add Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -184,8 +226,9 @@
                             <label for="gender" class="form-label">Gender</label>
                             <select class="form-select" id="gender" name="gender" required>
                                 <option value="" disabled selected>Select gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -246,6 +289,7 @@
                                 <option value="" disabled selected>Select Gender</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
+                                <option value="other">other</option>
                             </select>
                         </div>
                         <div class="mb-3">

@@ -1,3 +1,4 @@
+from ..database.controller import connect_db
 from ..models.model import Model
 
 
@@ -37,6 +38,73 @@ class StudentModel(Model):
     # def fetch_all(self):
     #     return self.read(self.table_name)
 
+    # Method to count all students in the database
+    def count_all(self):
+        try:
+
+            self.db.close()
+            self.cur.close()
+
+            self.db, self.cur = connect_db()
+
+            # Assuming `read` method can be used to count rows in the table
+            query = f"SELECT COUNT(*) FROM {self.table_name}"
+            query_result = self.cur.execute(query)  # `execute` should return the result of the query
+            result = self.cur.fetchone()
+            return result[0]  # This assumes the count is returned as a tuple like [(count,)]
+        except Exception as e:
+            print(f"Error counting students: {e}")
+            return 0
+        finally:
+            self.db.close()
+            self.cur.close()
+
+    # Method to fetch students with pagination
+    def fetch_paginated(self, page=1, per_page=10):
+        try:
+            # Close previous connections if any
+            self.db.close()
+            self.cur.close()
+
+            # Reconnect to the database
+            self.db, self.cur = connect_db()
+
+            # Calculate the offset based on page and per_page
+            offset = (page - 1) * per_page
+
+            # SQL query to fetch students with pagination
+            query = f"""
+                SELECT * FROM {self.table_name}
+                LIMIT {per_page} OFFSET {offset}
+            """
+
+            print(f'query: {query}')
+
+            # Execute the query
+            self.cur.execute(query)
+
+            # Fetch the results from the cursor
+            students = self.cur.fetchall()
+
+            print(f'per_page = {per_page}, offset = {offset}')
+            print(f'students = {students}')
+
+            # # Convert rows into a list of Student objects
+            # student_objects = [
+            #     self.__class__(student_id=student[0], firstname=student[1], lastname=student[2],
+            #                    course=student[3], year=student[4], gender=student[5], profile_picture_url=student[6])
+            #     for student in students
+            # ]
+            # return student_objects
+            return students
+        except Exception as e:
+            print(f"Error fetching paginated students: {e}")
+            return []
+        finally:
+            # Close connections
+            self.db.close()
+            self.cur.close()
+
     def add(self):
         try:
             self.create(
@@ -45,7 +113,6 @@ class StudentModel(Model):
             )
         except Exception as e:
             raise e
-
 
     def edit(self, basis_id):
         self_dict = self.to_dict()

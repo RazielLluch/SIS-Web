@@ -3,11 +3,11 @@
   <td>
     <div class="photo-container">
       <!-- Normal photo thumbnail -->
-      <img src="{{ student[6] if student[6] != 'NULL' else url_for('static', filename='images/profile-photo-placeholder.png') }}" class="photo-thumbnail">
+      <img src="{{ student[6] if student[6] != None and student[6] != 'NULL' else url_for('static', filename='images/profile-photo-placeholder.png') }}" class="photo-thumbnail">
 
       <!-- Hover photo enlarged -->
       <div class="photo-enlarged">
-        <img src="{{ student[6] if student[6] != 'NULL' else url_for('static', filename='images/profile-photo-placeholder.png') }}" class="enlarged-photo">
+        <img src="{{ student[6] if student[6] != None and student[6] != 'NULL' else url_for('static', filename='images/profile-photo-placeholder.png') }}" class="enlarged-photo">
       </div>
     </div>
     {{ student[0] }}
