@@ -1,13 +1,17 @@
-<tr data-student-id="{{ student[0] }}" data-firstname="{{ student[1] }}" data-lastname="{{ student[2] }}" data-course="{{ student[3] }}" data-year="{{ student[4] }}" data-gender="{{ student[5] }}">
-  <td><input type="checkbox" class="row-select-checkbox"></td>
+<tr data-student-id="{{ student[0] }}"
+    data-firstname="{{ student[1] }}"
+    data-lastname="{{ student[2] }}"
+    data-course="{{ student[3] }}"
+    data-year="{{ student[4] }}"
+    data-gender="{{ student[5] }}">
   <td>
     <div class="photo-container">
       <!-- Normal photo thumbnail -->
-      <img src="{{ student[6] if student[6] != 'NULL' else url_for('static', filename='images/profile-photo-placeholder.png') }}" class="photo-thumbnail">
+      <img src="{{ student[6] if student[6] != None and student[6] != 'NULL' else url_for('static', filename='images/profile-photo-placeholder.png') }}" class="photo-thumbnail">
 
       <!-- Hover photo enlarged -->
       <div class="photo-enlarged">
-        <img src="{{ student[6] if student[6] != 'NULL' else url_for('static', filename='images/profile-photo-placeholder.png') }}" class="enlarged-photo">
+        <img src="{{ student[6] if student[6] != None and student[6] != 'NULL' else url_for('static', filename='images/profile-photo-placeholder.png') }}" class="enlarged-photo">
       </div>
     </div>
     {{ student[0] }}
@@ -17,4 +21,9 @@
   <td>{{ student[3] }}</td>
   <td>{{ student[4] }}</td>
   <td>{{ student[5] }}</td>
+  <!-- add a class to the td -->
+  <td class="actions">
+    <button class="btn btn-sm btn-warning edit-btn" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
+    <button class="btn btn-sm btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+  </td>
 </tr>

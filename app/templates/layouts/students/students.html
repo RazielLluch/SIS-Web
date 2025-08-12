@@ -8,84 +8,45 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/crud_buttons.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    .content {
-        padding: 0 50px 0 50px;
+    header { flex: 1; }
+    .content { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 0 50px 50px 50px; }
+    table { width: 100%; border-collapse: collapse; }
+    table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    table .actions { border: 1px solid #ddd; padding: 0; width: 1%; white-space: nowrap; }
+    table thead { background-color: #f2f2f2; }
+    tr:hover { background-color: #f1f1f1; transition: background-color 0.3s ease; }
+    .photo-thumbnail { border-radius: 100%; background: lightgray; }
+    .photo-enlarged { display: none; position: absolute; border-radius: 100%; background: lightgray; z-index: 10; top: 0; left: 0; }
+    .photo-container { position: relative; display: inline-block; margin-right: 10px; }
+    .photo-container:hover .photo-enlarged { display: block; }
+    .photo-container .photo-thumbnail { width: 50px; height: 50px; }
+    .photo-container .photo-enlarged img { width: 170px; height: 170px; border-radius: 100%; background: lightgray; object-fit: cover; }
+    .profile-picture-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
     }
 
-    table {
-        width: 100%; /* Ensure the table spans the full width */
-        border-collapse: collapse;
+    .profile-pic-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    table th,
-    table td {
-        border: 1px solid #ddd; /* Add borders for clarity */
-        padding: 8px;
-        text-align: left;
-    }
-
-    table thead {
-        background-color: #f2f2f2; /* Optional: Highlight table header */
-    }
-
-    /* Default hover effect when not selected */
-    tr:hover {
-        background-color: #f1f1f1; /* Light gray hover color for unselected rows */
-    }
-
-    /* Hover effect when the row is selected */
-    tr.selected:hover {
-        background-color: #8cbe9f; /* Slightly darker shade of green for selected rows */
-    }
-
-    /* The color when the row is selected */
-    .selected {
-        background-color: #a3c4b2; /* Slightly darker green when selected */
-    }
-
-    /* Optional: Smooth transition for background color changes */
-    tr {
-        transition: background-color 0.3s ease;
-    }
-
-    .photo-thumbnail {
-        border-radius: 100%;
-        background: lightgray;
-    }
-
-    /* Ensures the enlarged photo is hidden by default */
-    .photo-enlarged {
-        display: none;
-        position: absolute; /* Position it over the original image */
-        border-radius: 100%;
-        background: lightgray;
-        z-index: 10;
-        top: 0;
-        left: 0;
-    }
-
-    .photo-container {
-        position: relative; /* Relative positioning for the hover effect */
-        display: inline-block;
-        margin-right: 10px;
-    }
-
-    .photo-container:hover .photo-enlarged {
-        display: block; /* Show enlarged image on hover */
-    }
-
-    .photo-container .photo-thumbnail {
-        width: 50px; /* Example thumbnail size */
-        height: 50px;
-    }
-
-    .photo-container .photo-enlarged img {
-        width: 170px; /* Example enlarged image size */
-        height: 170px;
-        border-radius: 100%;
-        background: lightgray;
-        z-index: 100;
+    .profile-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
         object-fit: cover;
+        border: 2px solid #ccc;
+        transition: transform 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    .profile-preview:hover {
+        transform: scale(2.5);
+        border-color: #007bff;
+        z-index: 10;
     }
 
 </style>
@@ -118,146 +79,60 @@
         </div>
     </div>
 
+    <!-- Search + Add Button -->
+    {% set layout_type = "students" %}
     {% include 'layouts/crud_buttons.html' %}
 
-    <table id="studentsTable">
-        <thead>
-        <tr>
-            <th></th>
-            <th>Id</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Course</th>
-            <th>Year</th>
-            <th>Gender</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for student in students %}
-        {% include 'layouts/students/student_row.html' %}
+    <!-- Students Table -->
+    <div class="table-container">
+        <table id="studentsTable">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Course</th>
+                <th>Year</th>
+                <th>Gender</th>
+                <th class="actions">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for student in students %}
+            {% include 'layouts/students/student_row.html' %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="{{ url_for('students.index', page=page-1, search=request.args.get('search', '')) }}" class="page-link">Previous</a>
+        {% endif %}
+        {% if page > 3 %}
+        <a href="{{ url_for('students.index', page=1) }}" class="page-link">1</a>
+        <span class="page-ellipsis">...</span>
+        {% endif %}
+        {% for i in range(page - 2, page + 3) %}
+        {% if i > 0 and i <= total_pages %}
+        <a href="{{ url_for('students.index', page=i) }}" class="page-link {% if i == page %}active{% endif %}">{{ i }}</a>
+        {% endif %}
         {% endfor %}
-        </tbody>
-    </table>
+        {% if page < total_pages - 2 %}
+        <span class="page-ellipsis">...</span>
+        <a href="{{ url_for('students.index', page=total_pages) }}" class="page-link">{{ total_pages }}</a>
+        {% endif %}
+        {% if page < total_pages %}
+        <a href="{{ url_for('students.index', page=page+1) }}" class="page-link">Next</a>
+        {% endif %}
+    </div>
 
     <!-- Add Modal -->
-    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Add Student</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addStudentForm" method="POST" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="student_id" class="form-label">ID Number(yyyy-nnnn)</label>
-                            <input type="text" class="form-control" id="student_id" name="student_id" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="firstname" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="firstname" name="firstname" required oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
->
-                        </div>
-                        <div class="mb-3">
-                            <label for="lastname" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="lastname" name="lastname" required oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
->
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_course" class="form-label">Course</label>
-                            <select class="form-select" id="add_course" name="course" required>
-                                <option value="" disabled selected>Select Course</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_year" class="form-label">Year</label>
-                            <select class="form-select" id="add_year" name="year" required>
-                                <option value="" disabled selected>Select Year Level</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5+</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="gender" class="form-label">Gender</label>
-                            <select class="form-select" id="gender" name="gender" required>
-                                <option value="" disabled selected>Select gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="add_student_image" class="form-label">Upload New Profile Picture</label>
-                            <input type="file" class="form-control" id="add_student_image" name="add_student_image" accept="image/*">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'layouts/crud_modals/add_modal.html' %}
 
     <!-- Edit Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Add Student</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editStudentForm" method="POST" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="edit_student_id" class="form-label">ID Number(yyyy-nnnn)</label>
-                            <input type="text" class="form-control" id="edit_student_id" name="student_id" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="firstname" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="edit_firstname" name="firstname" required oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
->
-                        </div>
-                        <div class="mb-3">
-                            <label for="lastname" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="edit_lastname" name="lastname" required oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
->
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_course" class="form-label">Course</label>
-                            <select class="form-select" id="edit_course" name="course" required>
-                                <option value="" disabled selected>Select Course</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_year" class="form-label">Year</label>
-                            <select class="form-select" id="edit_year" name="year" required>
-                                <option value="" disabled selected>Select Year Level</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5+</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="gender" class="form-label">Gender</label>
-                            <select class="form-select" id="edit_gender" name="gender" required>
-                                <option value="" disabled selected>Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_student_image" class="form-label">Upload New Profile Picture</label>
-                            <input type="file" class="form-control" id="edit_student_image" name="edit_student_image" accept="image/*">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'layouts/crud_modals/edit_modal.html' %}
 
     <!-- Delete Modal -->
     {% set delete_modal_type = "student" %}
@@ -268,206 +143,95 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const flashMessagesExist = {{ (get_flashed_messages()|length > 0)|tojson }};
         if (flashMessagesExist) {
-            const flashMessageModal = new bootstrap.Modal(document.getElementById('flashMessageModal'));
-            flashMessageModal.show();
+            new bootstrap.Modal(document.getElementById('flashMessageModal')).show();
         }
 
-        // Define validation logic
-        function validateStudentId(inputElement) {
-            const value = inputElement.value.trim();
-            const regex = /^(19[6-9]\d|20[0-2]\d|2025)-\d{4}$/; // Matches yyyy-nnnn with yyyy between 1961 and 2025
-            if (!regex.test(value)) {
-                inputElement.setCustomValidity("Invalid ID format. Ensure 'yyyy' is between 1961 and 2025 and follows 'yyyy-nnnn'.");
-            } else {
-                inputElement.setCustomValidity("");
-            }
-        }
-
-        // Attach validation to Add Modal
-        const addStudentIdInput = document.getElementById("student_id");
-        addStudentIdInput.addEventListener("input", function () {
-            validateStudentId(addStudentIdInput);
-        });
-
-        // Attach validation to Edit Modal
-        const editStudentIdInput = document.getElementById("edit_student_id");
-        editStudentIdInput.addEventListener("input", function () {
-            validateStudentId(editStudentIdInput);
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const deleteButton = document.getElementById("deleteButton");
-        const studentRows = document.querySelectorAll("#studentsTable tbody tr");
-        const addButton = document.getElementById("addButton")
-        const editButton = document.getElementById("editButton")
-        const deleteForm = document.getElementById("deleteStudentForm");
-        const studentIdsField = document.getElementById("studentIds");
-        const editStudentForm = document.getElementById("editStudentForm");
+        const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+        const deleteForm= document.getElementById("deleteStudentForm");
         const addStudentForm = document.getElementById("addStudentForm");
+        const editStudentForm = document.getElementById("editStudentForm");
+        const studentIdsField = document.getElementById("studentIds");
 
-        function getSelectedStudentRowAndId() {
-            const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
-            if (selectedCheckbox) {
-                const studentRow = selectedCheckbox.closest("tr");
-                return [studentRow, studentRow.querySelector("td:nth-child(2)").textContent.trim()]; // Adjust column index if necessary
-            }
-            return null;
-        }
-
-        addButton.addEventListener("click", async function() {
-            const response = await fetch('/courses/get'); // Replace with the correct URL endpoint
-            if (response.ok) {
-                const courses = await response.json(); // Assuming the response contains a list of colleges
-
+        // Populate course list when Add is clicked
+        document.getElementById("addButton").addEventListener("click", async function() {
+            const res = await fetch('/courses/get');
+            if (res.ok) {
+                const courses = await res.json();
                 const courseSelect = document.getElementById("add_course");
-
-                // Clear existing options
                 courseSelect.innerHTML = `<option value="" disabled selected>Select Course</option>`;
-
-                // Populate new options
-                courses.forEach(courseData => {
-                    const option = document.createElement("option");
-                    option.value = courseData.id;  // Assuming the college object has an `id` field
-                    option.textContent = courseData.id;  // Assuming the college object has a `name` field
-                    courseSelect.appendChild(option);
+                courses.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = c.id;
+                    courseSelect.appendChild(opt);
                 });
-            } else {
-                alert('Failed to fetch courses');
             }
-
             addStudentForm.action = `/students/add`;
         });
 
-        editButton.addEventListener("click", async function() {
-            const [selectedStudentRow, selectedStudentId] = getSelectedStudentRowAndId();
-            if (selectedStudentId) {
-                const studentId = selectedStudentRow.getAttribute("data-student-id");
-                const firstName = selectedStudentRow.getAttribute("data-firstname");
-                const lastName = selectedStudentRow.getAttribute("data-lastname");
-                const course = selectedStudentRow.getAttribute("data-course");
-                const year = selectedStudentRow.getAttribute("data-year");
-                const gender = selectedStudentRow.getAttribute("data-gender");
+        // Edit button click
+        document.querySelectorAll(".edit-btn").forEach(btn => {
+            btn.addEventListener("click", async function() {
+                const row = this.closest("tr");
+                const studentId = row.dataset.studentId;
+                document.getElementById("edit_student_id").value = studentId;
+                document.getElementById("edit_firstname").value = row.dataset.firstname;
+                document.getElementById("edit_lastname").value = row.dataset.lastname;
+                document.getElementById("edit_year").value = row.dataset.year;
+                document.getElementById("edit_gender").value = row.dataset.gender;
 
-                const response = await fetch('/courses/get'); // Replace with the correct URL endpoint
-                if (response.ok) {
-                    const courses = await response.json(); // Assuming the response contains a list of courses
-
+                const res = await fetch('/courses/get');
+                if (res.ok) {
+                    const courses = await res.json();
                     const courseSelect = document.getElementById("edit_course");
+                    courseSelect.innerHTML = `<option value="" disabled>Select Course</option>`;
+                    courses.forEach(c => {
+                        const opt = document.createElement("option");
+                        opt.value = c.id;
+                        opt.textContent = c.id;
+                        if (c.id === row.dataset.course) opt.selected = true;
+                        courseSelect.appendChild(opt);
+                    });
+                }
 
-                    // Clear existing options
-                    courseSelect.innerHTML = `<option value="" disabled selected>${course}</option>`;
+                editStudentForm.action = `/students/edit/${studentId}`;
+            });
+        });
 
-                    // Populate new options
-                    courses.forEach(courseData => {
-                        const option = document.createElement("option");
-                        option.value = courseData.id;  // Assuming the course object has an `id` field
-                        option.textContent = courseData.id;  // Assuming the course object has a `name` field
-                        courseSelect.appendChild(option);
+        const deleteIdsInput = document.getElementById("studentIds");
+
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const row = this.closest("tr");
+                const studentId = row.dataset.studentId;
+
+                deleteIdsInput.value = JSON.stringify([studentId]); // send as array
+                deleteForm.addEventListener("submit", async function (e) {
+                    e.preventDefault(); // stop normal form POST
+
+                    const res = await fetch("/students/delete", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ student_ids: JSON.parse(deleteIdsInput.value) })
                     });
 
-                    // Optionally, set the current course if needed
-                    courseSelect.value = course;  // If `course` holds the selected course value
-                } else {
-                    alert('Failed to fetch courses');
-                }
-
-                // Populate the modal fields
-                document.getElementById("edit_student_id").value = studentId;
-                document.getElementById("edit_firstname").value = firstName;
-                document.getElementById("edit_lastname").value = lastName;
-                document.getElementById("edit_course").value = course;
-                document.getElementById("edit_year").value = year;
-                document.getElementById("edit_gender").value = gender;
-
-                editStudentForm.action = `/students/edit/${selectedStudentId}`;
-            }
-        });
-
-        function updateButtonState() {
-            const selectedCheckboxes = document.querySelectorAll(".row-select-checkbox:checked");
-            deleteButton.disabled = selectedCheckboxes.length === 0;
-            editButton.disabled = selectedCheckboxes.length !== 1;
-        }
-
-        // Add event listener to all rows to toggle checkbox selection and highlight row
-        studentRows.forEach(row => {
-            const checkbox = row.querySelector(".row-select-checkbox");
-
-            // When the row is clicked, toggle checkbox and row selection
-            row.addEventListener("click", function(event) {
-                if (event.target !== checkbox) {  // Don't trigger if the checkbox itself is clicked
-                    checkbox.checked = !checkbox.checked;
-                }
-
-                // Toggle the "selected" class on the row
-                if (checkbox.checked) {
-                    row.classList.add("selected");
-                } else {
-                    row.classList.remove("selected");
-                }
-
-                updateButtonState();
-            });
-
-            // Add event listener to checkbox to toggle row selection when the checkbox is checked/unchecked
-            checkbox.addEventListener("change", function() {
-                if (checkbox.checked) {
-                    row.classList.add("selected");
-                } else {
-                    row.classList.remove("selected");
-                }
-                updateButtonState();
-            });
-        });
-
-        // Handle delete button click
-        deleteButton.addEventListener("click", function() {
-            const selectedRows = document.querySelectorAll(".row-select-checkbox:checked");
-            const selectedIds = Array.from(selectedRows).map(row => row.closest("tr").dataset.studentId);
-            studentIdsField.value = JSON.stringify(selectedIds); // Store as a JSON array
-        });
-
-        // Handle form submission
-        deleteForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const studentIds = JSON.parse(studentIdsField.value);
-            console.log("Deleting students with IDs:", studentIds);
-
-            // Make the backend POST request
-            const response = await fetch(`/students/delete`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ student_ids: studentIds })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(`Student deleted successfully with data: ${JSON.stringify(data)}`);
-
-                    // Close the modal
-                    const modal = document.getElementById('deleteModal'); // Replace 'modalId' with the actual modal ID
-                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
-                    if (bootstrapModal) {
-                        bootstrapModal.hide(); // Close the modal
+                    if (res.ok) {
+                        const data = await res.json();
+                        console.log(data);
+                        // Optionally refresh table or remove deleted row from DOM
+                        location.reload();
                     }
-
-                    // Optionally refresh the table or remove the rows
-                    window.location.reload()
-                })
-                .catch(error => {
-                    alert(`Error deleting students: ${error}`);
                 });
-        });
-    });
 
+
+                deleteModal.show();
+            });
+        });
+
+    });
 </script>
 {% endblock %}

@@ -1,3 +1,5 @@
+from math import ceil
+
 import cloudinary
 import cloudinary.uploader
 from flask import render_template, redirect, request, jsonify, url_for, flash
@@ -7,13 +9,33 @@ from ..models.student_model import StudentModel
 s_model = StudentModel()
 
 
-# import app.models as models
-# from app.user.forms import UserForm
-
-
 @students_bp.route('/students')
+@students_bp.route('/students/')
 def index():
-    return render_template('layouts/students/students.html', title='Students', students=s_model.fetch_all())
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
+
+    per_page = 25
+
+    if search:
+        total_count = s_model.count_filtered(search)
+        students = s_model.fetch_filtered_paginated(search, page, per_page)
+    else:
+        total_count = s_model.count_all()
+        students = s_model.fetch_paginated(page, per_page)
+
+    total_pages = ceil(total_count / per_page)
+
+    if page > total_pages and total_pages > 0:
+        return redirect(url_for('students.index', page=1, search=search))
+
+    return render_template(
+        'layouts/students/students.html',
+        students=students,
+        page=page,
+        total_pages=total_pages,
+        search=search
+    )
 
 
 @students_bp.route('/students/add', methods=['POST'])
@@ -59,7 +81,7 @@ def add_student():
 
         # Check if the error message contains both 'Duplicate entry' and 'course.name'
         if 'Duplicate entry' in error_message and 'student.PRIMARY' in error_message:
-            flash("Course with that name already exists")
+            flash("Student with that id number already exists")
         else:
             flash("Unexpected error")
 
@@ -106,7 +128,7 @@ def edit_student(basis_student_id):
 
     if result == True:
         flash("Student updated successfully")
-        return redirect(url_for('students.index'))
+        return redirect(request.referrer or url_for('students.index'))
     elif 'Duplicate entry' in result and 'student.PRIMARY' in result:
         flash("Student with that ID already exists")
     else:

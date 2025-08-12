@@ -1,3 +1,5 @@
+from math import ceil
+
 from flask import render_template, redirect, request, jsonify, url_for, flash
 from . import colleges_bp
 from ..models.college_model import CollegeModel
@@ -7,7 +9,31 @@ college_model = CollegeModel()
 
 @colleges_bp.route('/colleges')
 def index():
-    return render_template('layouts/colleges/colleges.html', title="Colleges", colleges=college_model.fetch_all())
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
+
+    per_page = 25
+
+    if search:
+        total_count = college_model.count_filtered(search)
+        colleges = college_model.fetch_filtered_paginated(search, page, per_page)
+    else:
+        total_count = college_model.count_all()
+        colleges = college_model.fetch_paginated(page, per_page)
+
+    total_pages = ceil(total_count / per_page)
+
+    if page > total_pages and total_pages > 0:
+        return redirect(url_for('colleges.index', page=1, search=search))
+
+    return render_template(
+        'layouts/colleges/colleges.html',
+        colleges=colleges,
+        page=page,
+        total_pages=total_pages,
+        search=search
+    )
+    # return render_template('layouts/colleges/colleges.html', title="Colleges", colleges=college_model.fetch_all())
 
 
 @colleges_bp.route('/colleges/add', methods=['POST'])

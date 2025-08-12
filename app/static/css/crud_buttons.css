@@ -1,6 +1,18 @@
 .buttons {
     display: flex;
-    justify-content: flex-end; /* Align buttons to the right */
-    margin: 1rem 0 1rem 0; /* Add some space between buttons and table */
+    justify-content: flex-end;
+    align-items: stretch; /* Match tallest element */
+    margin: 1rem 0;
     column-gap: 10px;
+}
+
+.search {
+    display: flex;
+    align-items: stretch; /* Input & button match form height */
+    margin: 0;
+}
+
+.search input,
+.search button {
+    height: auto; /* Let flexbox handle height */
 }

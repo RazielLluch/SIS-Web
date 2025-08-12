@@ -8,44 +8,45 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/crud_buttons.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    .content {
-        padding: 0 50px 0 50px;
+    header { flex: 1; }
+    .content { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 0 50px 50px 50px; }
+    table { width: 100%; border-collapse: collapse; }
+    table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    table .actions { border: 1px solid #ddd; padding: 0; width: 1%; white-space: nowrap; }
+    table thead { background-color: #f2f2f2; }
+    tr:hover { background-color: #f1f1f1; transition: background-color 0.3s ease; }
+    .photo-thumbnail { border-radius: 100%; background: lightgray; }
+    .photo-enlarged { display: none; position: absolute; border-radius: 100%; background: lightgray; z-index: 10; top: 0; left: 0; }
+    .photo-container { position: relative; display: inline-block; margin-right: 10px; }
+    .photo-container:hover .photo-enlarged { display: block; }
+    .photo-container .photo-thumbnail { width: 50px; height: 50px; }
+    .photo-container .photo-enlarged img { width: 170px; height: 170px; border-radius: 100%; background: lightgray; object-fit: cover; }
+    .profile-picture-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
     }
 
-    table {
-        width: 100%; /* Ensure the table spans the full width */
-        border-collapse: collapse;
+    .profile-pic-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    table th,
-    table td {
-        border: 1px solid #ddd; /* Add borders for clarity */
-        padding: 8px;
-        text-align: left;
+    .profile-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ccc;
+        transition: transform 0.2s ease-in-out;
+        cursor: pointer;
     }
 
-    table thead {
-        background-color: #f2f2f2; /* Optional: Highlight table header */
-    }
-
-    /* Default hover effect when not selected */
-    tr:hover {
-        background-color: #f1f1f1; /* Light gray hover color for unselected rows */
-    }
-
-    /* Hover effect when the row is selected */
-    tr.selected:hover {
-        background-color: #8cbe9f; /* Slightly darker shade of green for selected rows */
-    }
-
-    /* The color when the row is selected */
-    .selected {
-        background-color: #a3c4b2; /* Slightly darker green when selected */
-    }
-
-    /* Optional: Smooth transition for background color changes */
-    tr {
-        transition: background-color 0.3s ease;
+    .profile-preview:hover {
+        transform: scale(2.5);
+        border-color: #007bff;
+        z-index: 10;
     }
 
 </style>
@@ -78,23 +79,26 @@
         </div>
     </div>
 
+    {% set layout_type = "courses" %}
     {% include 'layouts/crud_buttons.html' %}
 
-    <table  id="coursesTable">
-        <thead>
-        <tr>
-            <th></th>
-            <th>Course ID</th>
-            <th>Course Name</th>
-            <th>College</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for course in courses %}
-        {% include 'layouts/courses/course_row.html' %}
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table  id="coursesTable">
+            <thead>
+            <tr>
+                <th>Course ID</th>
+                <th>Course Name</th>
+                <th>College</th>
+                <th class="actions">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for course in courses %}
+            {% include 'layouts/courses/course_row.html' %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <!-- Add Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -183,160 +187,87 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const deleteButton = document.getElementById("deleteButton");
-        const courseRows = document.querySelectorAll("#coursesTable tbody tr");
-        const addButton = document.getElementById("addButton")
-        const editButton = document.getElementById("editButton")
-        const deleteForm = document.getElementById("deleteCourseForm");
-        const courseIdsField = document.getElementById("courseIds");
+
+        const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+        const deleteForm= document.getElementById("deleteCourseForm");
+        const addStudentForm = document.getElementById("addCourseForm");
         const editCourseForm = document.getElementById("editCourseForm");
-        const addCourseForm = document.getElementById("addCourseForm");
+        const courseIdsField = document.getElementById("courseIds");
 
-        function getSelectedCourseRowAndId() {
-            const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
-            if (selectedCheckbox) {
-                const courseRow = selectedCheckbox.closest("tr");
-                return [courseRow, courseRow.querySelector("td:nth-child(2)").textContent.trim()]; // Adjust column index if necessary
-            }
-            return null;
-        }
-
-        addButton.addEventListener("click", async function() {
-            const response = await fetch('/colleges/get'); // Replace with the correct URL endpoint
-            if (response.ok) {
-                const colleges = await response.json(); // Assuming the response contains a list of colleges
-
+        // Populate course list when Add is clicked
+        document.getElementById("addButton").addEventListener("click", async function() {
+            const res = await fetch('/colleges/get');
+            if (res.ok) {
+                const courses = await res.json();
                 const collegeSelect = document.getElementById("add_college");
-
-                // Clear existing options
                 collegeSelect.innerHTML = `<option value="" disabled selected>Select College</option>`;
-
-                // Populate new options
-                colleges.forEach(collegeData => {
-                    const option = document.createElement("option");
-                    option.value = collegeData.id;  // Assuming the college object has an `id` field
-                    option.textContent = collegeData.id;  // Assuming the college object has a `name` field
-                    collegeSelect.appendChild(option);
+                courses.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = c.id;
+                    collegeSelect.appendChild(opt);
                 });
-            } else {
-                alert('Failed to fetch colleges');
             }
-
-            addCourseForm.action = `/courses/add`;
+            addStudentForm.action = `/courses/add`;
         });
 
-        editButton.addEventListener("click", async function() {
-            const [selectedCourseRow, selectedCourseId] = getSelectedCourseRowAndId();
-            if (selectedCourseId) {
-                const courseId = selectedCourseRow.getAttribute("data-course-id");
-                const courseName = selectedCourseRow.getAttribute("data-course-name");
-                const college = selectedCourseRow.getAttribute("data-college");
+        // Edit button click
+        document.querySelectorAll(".edit-btn").forEach(btn => {
+            btn.addEventListener("click", async function() {
+                const row = this.closest("tr");
+                const courseId = row.dataset.courseId;
+                document.getElementById("edit_course_id").value = courseId;
+                document.getElementById("edit_coursename").value = row.dataset.courseName;
 
-                const response = await fetch('/colleges/get'); // Replace with the correct URL endpoint
-                if (response.ok) {
-                    const colleges = await response.json(); // Assuming the response contains a list of colleges
-
+                const res = await fetch('/colleges/get');
+                if (res.ok) {
+                    const courses = await res.json();
                     const collegeSelect = document.getElementById("edit_college");
+                    collegeSelect.innerHTML = `<option value="" disabled>Select College</option>`;
+                    courses.forEach(c => {
+                        const opt = document.createElement("option");
+                        opt.value = c.id;
+                        opt.textContent = c.id;
+                        if (c.id === row.dataset.college) opt.selected = true;
+                        collegeSelect.appendChild(opt);
+                    });
+                }
 
-                    // Clear existing options
-                    collegeSelect.innerHTML = `<option value="" disabled selected>${college}</option>`;
+                editCourseForm.action = `/courses/edit/${courseId}`;
+            });
+        });
 
-                    // Populate new options
-                    colleges.forEach(collegeData => {
-                        const option = document.createElement("option");
-                        option.value = collegeData.id;  // Assuming the college object has an `id` field
-                        option.textContent = collegeData.id;  // Assuming the college object has a `name` field
-                        collegeSelect.appendChild(option);
+        const deleteIdsInput = document.getElementById("courseIds");
+
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const row = this.closest("tr");
+                const courseId = row.dataset.courseId;
+
+                deleteIdsInput.value = JSON.stringify([courseId]); // send as array
+                deleteForm.addEventListener("submit", async function (e) {
+                    e.preventDefault(); // stop normal form POST
+
+                    const res = await fetch("/courses/delete", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ course_ids: JSON.parse(deleteIdsInput.value) })
                     });
 
-                    // Optionally, set the current course if needed
-                    collegeSelect.value = college;  // If `course` holds the selected course value
-                } else {
-                    alert('Failed to fetch courses');
-                }
-
-                // Populate the modal fields
-                document.getElementById("edit_course_id").value = courseId;
-                document.getElementById("edit_coursename").value = courseName;
-                document.getElementById("edit_college").value = college;
-
-                editCourseForm.action = `/courses/edit/${selectedCourseId}`;
-            }
-        });
-
-        function updateButtonState() {
-            const selectedCheckboxes = document.querySelectorAll(".row-select-checkbox:checked");
-            deleteButton.disabled = selectedCheckboxes.length === 0;
-            editButton.disabled = selectedCheckboxes.length !== 1;
-        }
-
-        courseRows.forEach(row => {
-            const checkbox = row.querySelector(".row-select-checkbox");
-
-            row.addEventListener("click", function(event) {
-                if (event.target !== checkbox) {
-                    checkbox.checked = !checkbox.checked;
-                }
-
-                if (checkbox.checked) {
-                    row.classList.add("selected");
-                } else {
-                    row.classList.remove("selected");
-                }
-
-                updateButtonState();
-            });
-
-            checkbox.addEventListener("change", function() {
-                if (checkbox.checked) {
-                    row.classList.add("selected");
-                } else {
-                    row.classList.remove("selected");
-                }
-                updateButtonState();
-            });
-        });
-
-
-        // Handle delete button click
-        deleteButton.addEventListener("click", function() {
-            const selectedRows = document.querySelectorAll(".row-select-checkbox:checked");
-            const selectedIds = Array.from(selectedRows).map(row => row.closest("tr").dataset.courseId);
-            courseIdsField.value = JSON.stringify(selectedIds); // Store as a JSON array
-        });
-
-        // Handle form submission
-        deleteForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const courseIds = JSON.parse(courseIdsField.value);
-            console.log("Deleting courses with IDs:", courseIds);
-
-            // Make the backend POST request
-            const response = await fetch(`/courses/delete`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ course_ids: courseIds })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(`Course deleted successfully with data: ${JSON.stringify(data)}`);
-
-                    // Close the modal
-                    const modal = document.getElementById('deleteCourseModal'); // Replace 'modalId' with the actual modal ID
-                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
-                    if (bootstrapModal) {
-                        bootstrapModal.hide(); // Close the modal
+                    if (res.ok) {
+                        const data = await res.json();
+                        location.reload();
+                    } else {
+                        const data = await res.json();
+                        // Optional: don't reload so user can see the error
                     }
-
-                    // Optionally refresh the table or remove the rows
-                    window.location.reload()
-                })
-                .catch(error => {
-                    alert(`Error deleting courses: ${error}`);
                 });
+
+
+                deleteModal.show();
+            });
         });
+
     });
 </script>
 {% endblock %}
