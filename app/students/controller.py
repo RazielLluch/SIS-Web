@@ -78,7 +78,7 @@ def add_student():
 
         # Check if the error message contains both 'Duplicate entry' and 'course.name'
         if 'Duplicate entry' in error_message and 'student.PRIMARY' in error_message:
-            flash("Course with that name already exists")
+            flash("Student with that id number already exists")
         else:
             flash("Unexpected error")
 
