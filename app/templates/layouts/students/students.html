@@ -216,7 +216,7 @@
                     const res = await fetch("/students/delete", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ studentIds: JSON.parse(deleteIdsInput.value) })
+                        body: JSON.stringify({ student_ids: JSON.parse(deleteIdsInput.value) })
                     });
 
                     if (res.ok) {
