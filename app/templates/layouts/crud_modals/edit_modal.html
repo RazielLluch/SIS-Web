@@ -1,0 +1,125 @@
+<!-- Edit Student Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Student</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <form id="editStudentForm" method="POST" enctype="multipart/form-data" autocomplete="off">
+
+          <!-- Student ID -->
+          <div class="mb-3">
+            <label for="edit_student_id" class="form-label">ID Number (yyyy-nnnn)</label>
+            <input type="text" class="form-control" id="edit_student_id" name="student_id" required>
+          </div>
+
+          <!-- First Name -->
+          <div class="mb-3">
+            <label for="edit_firstname" class="form-label">First Name</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="edit_firstname"
+                    name="firstname"
+                    required
+                    oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
+            >
+          </div>
+
+          <!-- Last Name -->
+          <div class="mb-3">
+            <label for="edit_lastname" class="form-label">Last Name</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="edit_lastname"
+                    name="lastname"
+                    required
+                    oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
+            >
+          </div>
+
+          <!-- Course -->
+          <div class="mb-3">
+            <label for="edit_course" class="form-label">Course</label>
+            <select class="form-select" id="edit_course" name="course" required>
+              <option value="" disabled selected>Select Course</option>
+            </select>
+          </div>
+
+          <!-- Year Level -->
+          <div class="mb-3">
+            <label for="edit_year" class="form-label">Year</label>
+            <select class="form-select" id="edit_year" name="year" required>
+              <option value="" disabled selected>Select Year Level</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5+</option>
+            </select>
+          </div>
+
+          <!-- Gender -->
+          <div class="mb-3">
+            <label for="edit_gender" class="form-label">Gender</label>
+            <select class="form-select" id="edit_gender" name="gender" required>
+              <option value="" disabled selected>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Profile Picture -->
+          <div class="mb-3">
+            <label for="edit_student_image" class="form-label">Upload New Profile Picture</label>
+            <input
+                    type="file"
+                    class="form-control"
+                    id="edit_student_image"
+                    name="edit_student_image"
+                    accept=".jpg,.jpeg,.png"
+            >
+          </div>
+
+          <!-- Image Validation Script -->
+          <script>
+            document.getElementById('edit_student_image').addEventListener('change', function () {
+              const file = this.files[0];
+              if (!file) return;
+
+              const allowedTypes = ['image/jpeg', 'image/png'];
+              const maxSize = 2 * 1024 * 1024; // 2MB limit
+
+              if (!allowedTypes.includes(file.type)) {
+                alert('Only JPG and PNG files are allowed.');
+                this.value = '';
+                return;
+              }
+
+              if (file.size > maxSize) {
+                alert('File size must be less than 2MB.');
+                this.value = '';
+                return;
+              }
+            });
+          </script>
+
+          <!-- Submit -->
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

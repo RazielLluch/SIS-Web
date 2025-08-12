@@ -1,0 +1,101 @@
+<!-- Add Student Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Add Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <form id="addStudentForm" method="POST" enctype="multipart/form-data" autocomplete="off">
+
+                    <!-- Student ID -->
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">ID Number (yyyy-nnnn)</label>
+                        <input type="text" class="form-control" id="student_id" name="student_id" required>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="mb-3">
+                        <label for="firstname" class="form-label">First Name</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="firstname"
+                                name="firstname"
+                                required
+                                oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
+                        >
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Last Name</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="lastname"
+                                name="lastname"
+                                required
+                                oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
+                        >
+                    </div>
+
+                    <!-- Course -->
+                    <div class="mb-3">
+                        <label for="add_course" class="form-label">Course</label>
+                        <select class="form-select" id="add_course" name="course" required>
+                            <option value="" disabled selected>Select Course</option>
+                        </select>
+                    </div>
+
+                    <!-- Year Level -->
+                    <div class="mb-3">
+                        <label for="add_year" class="form-label">Year</label>
+                        <select class="form-select" id="add_year" name="year" required>
+                            <option value="" disabled selected>Select Year Level</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select" id="gender" name="gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Profile Picture -->
+                    <div class="mb-3">
+                        <label for="add_student_image" class="form-label">Upload Profile Picture</label>
+                        <input
+                                type="file"
+                                class="form-control"
+                                id="add_student_image"
+                                name="add_student_image"
+                                accept="image/*"
+                        >
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
