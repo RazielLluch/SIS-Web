@@ -8,44 +8,45 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/crud_buttons.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    .content {
-        padding: 0 50px 50px 50px;
+    header { flex: 1; }
+    .content { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 0 50px 50px 50px; }
+    table { width: 100%; border-collapse: collapse; }
+    table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    table .actions { border: 1px solid #ddd; padding: 0; width: 1%; white-space: nowrap; }
+    table thead { background-color: #f2f2f2; }
+    tr:hover { background-color: #f1f1f1; transition: background-color 0.3s ease; }
+    .photo-thumbnail { border-radius: 100%; background: lightgray; }
+    .photo-enlarged { display: none; position: absolute; border-radius: 100%; background: lightgray; z-index: 10; top: 0; left: 0; }
+    .photo-container { position: relative; display: inline-block; margin-right: 10px; }
+    .photo-container:hover .photo-enlarged { display: block; }
+    .photo-container .photo-thumbnail { width: 50px; height: 50px; }
+    .photo-container .photo-enlarged img { width: 170px; height: 170px; border-radius: 100%; background: lightgray; object-fit: cover; }
+    .profile-picture-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
     }
 
-    table {
-        width: 100%; /* Ensure the table spans the full width */
-        border-collapse: collapse;
+    .profile-pic-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    table th,
-    table td {
-        border: 1px solid #ddd; /* Add borders for clarity */
-        padding: 8px;
-        text-align: left;
+    .profile-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ccc;
+        transition: transform 0.2s ease-in-out;
+        cursor: pointer;
     }
 
-    table thead {
-        background-color: #f2f2f2; /* Optional: Highlight table header */
-    }
-
-    /* Default hover effect when not selected */
-    tr:hover {
-        background-color: #f1f1f1; /* Light gray hover color for unselected rows */
-    }
-
-    /* Hover effect when the row is selected */
-    tr.selected:hover {
-        background-color: #8cbe9f; /* Slightly darker shade of green for selected rows */
-    }
-
-    /* The color when the row is selected */
-    .selected {
-        background-color: #a3c4b2; /* Slightly darker green when selected */
-    }
-
-    /* Optional: Smooth transition for background color changes */
-    tr {
-        transition: background-color 0.3s ease;
+    .profile-preview:hover {
+        transform: scale(2.5);
+        border-color: #007bff;
+        z-index: 10;
     }
 
 </style>
@@ -83,9 +84,9 @@
     <table id ="collegesTable">
         <thead>
         <tr>
-            <th></th>
             <th>College ID</th>
             <th>College Name</th>
+            <th class="actions">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -170,108 +171,59 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const deleteButton = document.getElementById("deleteButton");
-        const collegeRows = document.querySelectorAll("#collegesTable tbody tr");
-        const editButton = document.getElementById("editButton")
-        const deleteForm = document.getElementById("deleteCollegeForm");
-        const collegeIdsField = document.getElementById("collegeIds");
+
+        const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+        const deleteForm= document.getElementById("deleteCollegeForm");
+        const addCollegeForm = document.getElementById("addCollegeForm");
         const editCollegeForm = document.getElementById("editCollegeForm");
+        const collegeIdsField = document.getElementById("collegeIds");
 
-        function getSelectedCollegeRowAndId() {
-            const selectedCheckbox = document.querySelector(".row-select-checkbox:checked");
-            if (selectedCheckbox) {
-                const collegeRow = selectedCheckbox.closest("tr");
-                return [collegeRow, collegeRow.querySelector("td:nth-child(2)").textContent.trim()]; // Adjust column index if necessary
-            }
-            return null;
-        }
-
-        editButton.addEventListener("click", function() {
-            const [selectedCollegeRow, selectedCollegeId] = getSelectedCollegeRowAndId();
-            if (selectedCollegeId) {
-                const courseId = selectedCollegeRow.getAttribute("data-college-id");
-                const courseName = selectedCollegeRow.getAttribute("data-college-name");
-
-                // Populate the modal fields
-                document.getElementById("edit_college_id").value = courseId;
-                document.getElementById("edit_collegename").value = courseName;
-
-                editCollegeForm.action = `/colleges/edit/${selectedCollegeId}`;
-            }
+        // Populate course list when Add is clicked
+        document.getElementById("addButton").addEventListener("click", async function() {
+            addCollegeForm.action = `/colleges/add`;
         });
 
-        function updateButtonState() {
-            const selectedCheckboxes = document.querySelectorAll(".row-select-checkbox:checked");
-            deleteButton.disabled = selectedCheckboxes.length === 0;
-            editButton.disabled = selectedCheckboxes.length !== 1;
-        }
 
-        collegeRows.forEach(row => {
-            const checkbox = row.querySelector(".row-select-checkbox");
+        // Edit button click
+        document.querySelectorAll(".edit-btn").forEach(btn => {
+            btn.addEventListener("click", async function() {
+                const row = this.closest("tr");
+                const collegeId = row.dataset.collegeId;
+                document.getElementById("edit_college_id").value = collegeId;
+                document.getElementById("edit_collegename").value = row.dataset.collegeName;
 
-            row.addEventListener("click", function(event) {
-                if (event.target !== checkbox) {
-                    checkbox.checked = !checkbox.checked;
-                }
-
-                if (checkbox.checked) {
-                    row.classList.add("selected");
-                } else {
-                    row.classList.remove("selected");
-                }
-
-                updateButtonState();
-            });
-
-            checkbox.addEventListener("change", function() {
-                if (checkbox.checked) {
-                    row.classList.add("selected");
-                } else {
-                    row.classList.remove("selected");
-                }
-                updateButtonState();
+                editCollegeForm.action = `/colleges/edit/${collegeId}`;
             });
         });
 
+        const deleteIdsInput = document.getElementById("collegeIds");
 
-        // Handle delete button click
-        deleteButton.addEventListener("click", function() {
-            const selectedRows = document.querySelectorAll(".row-select-checkbox:checked");
-            const selectedIds = Array.from(selectedRows).map(row => row.closest("tr").dataset.collegeId);
-            collegeIdsField.value = JSON.stringify(selectedIds); // Store as a JSON array
-        });
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const row = this.closest("tr");
+                const collegeId = row.dataset.collegeId;
 
-        // Handle form submission
-        deleteForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const collegeIds = JSON.parse(collegeIdsField.value);
-            console.log("Deleting colleges with IDs:", collegeIds);
+                deleteIdsInput.value = JSON.stringify([collegeId]); // send as array
+                deleteForm.addEventListener("submit", async function (e) {
+                    e.preventDefault(); // stop normal form POST
 
-            // Make the backend POST request
-            const response = await fetch(`/colleges/delete`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ college_ids: collegeIds })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(`College deleted successfully with data: ${JSON.stringify(data)}`);
+                    const res = await fetch("/colleges/delete", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ college_ids: JSON.parse(deleteIdsInput.value) })
+                    });
 
-                    // Close the modal
-                    const modal = document.getElementById('deleteCollegeModal'); // Replace 'modalId' with the actual modal ID
-                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
-                    if (bootstrapModal) {
-                        bootstrapModal.hide(); // Close the modal
+                    if (res.ok) {
+                        const data = await res.json();
+                        console.log(data);
+                        // Optionally refresh table or remove deleted row from DOM
+                        location.reload();
                     }
-
-                    // Optionally refresh the table or remove the rows
-                    window.location.reload()
-                })
-                .catch(error => {
-                    alert(`Error deleting colleges: ${error}`);
                 });
+
+
+                deleteModal.show();
+            });
         });
     });
 </script>
