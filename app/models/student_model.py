@@ -59,6 +59,53 @@ class StudentModel(Model):
             self.db.close()
             self.cur.close()
 
+    def count_filtered(self, search_term):
+
+        self.db.close()
+        self.cur.close()
+
+        # Reconnect to the database
+        self.db, self.cur = connect_db()
+
+        query = """
+            SELECT COUNT(*) FROM student
+            WHERE id LIKE %s
+            OR firstname LIKE %s
+            OR lastname LIKE %s
+            OR course LIKE %s
+            OR year LIKE %s
+            OR gender LIKE %s
+        """
+        like_term = f"%{search_term}%"
+        params = (like_term,) * 6  # 6 columns
+        self.cur.execute(query, params)
+        return self.cur.fetchone()[0]
+
+    def fetch_filtered_paginated(self, search_term, page, per_page):
+
+        self.db.close()
+        self.cur.close()
+
+        # Reconnect to the database
+        self.db, self.cur = connect_db()
+
+        offset = (page - 1) * per_page
+        query = """
+            SELECT * FROM student
+            WHERE id LIKE %s
+            OR firstname LIKE %s
+            OR lastname LIKE %s
+            OR course LIKE %s
+            OR year LIKE %s
+            OR gender LIKE %s
+            LIMIT %s OFFSET %s
+        """
+        like_term = f"%{search_term}%"
+        params = (like_term,) * 6 + (per_page, offset)
+        self.cur.execute(query, params)
+        return self.cur.fetchall()
+
+
     # Method to fetch students with pagination
     def fetch_paginated(self, page=1, per_page=10):
         try:

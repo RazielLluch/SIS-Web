@@ -12,28 +12,31 @@ s_model = StudentModel()
 @students_bp.route('/students')
 @students_bp.route('/students/')
 def index():
-
     page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
 
-    print("Page: ", page)
+    per_page = 25
 
-    per_page = 25  # Number of students per page
+    if search:
+        total_count = s_model.count_filtered(search)
+        students = s_model.fetch_filtered_paginated(search, page, per_page)
+    else:
+        total_count = s_model.count_all()
+        students = s_model.fetch_paginated(page, per_page)
 
-    total_pages = ceil(s_model.count_all() / per_page)  # Total pages
+    total_pages = ceil(total_count / per_page)
 
-    if page > total_pages:
-        return redirect(url_for('students.index', page=1))
+    if page > total_pages and total_pages > 0:
+        return redirect(url_for('students.index', page=1, search=search))
 
-    students = s_model.fetch_paginated(page, per_page)
+    return render_template(
+        'layouts/students/students.html',
+        students=students,
+        page=page,
+        total_pages=total_pages,
+        search=search
+    )
 
-    print("total pages", total_pages)
-
-    print("students: ", students)
-
-    return render_template('layouts/students/students.html',
-                           students=students,
-                           page=page,
-                           total_pages=total_pages)
 
 @students_bp.route('/students/add', methods=['POST'])
 def add_student():
