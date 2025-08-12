@@ -294,8 +294,32 @@
                         </div>
                         <div class="mb-3">
                             <label for="edit_student_image" class="form-label">Upload New Profile Picture</label>
-                            <input type="file" class="form-control" id="edit_student_image" name="edit_student_image" accept="image/*">
+                            <input type="file" class="form-control" id="edit_student_image" name="edit_student_image"
+                                   accept=".jpg,.jpeg,.png">
                         </div>
+
+                        <script>
+                            document.getElementById('edit_student_image').addEventListener('change', function() {
+                                const file = this.files[0];
+                                if (!file) return;
+
+                                const allowedTypes = ['image/jpeg', 'image/png'];
+                                const maxSize = 2 * 1024 * 1024; // 5MB in bytes
+
+                                if (!allowedTypes.includes(file.type)) {
+                                    alert('Only JPG and PNG files are allowed.');
+                                    this.value = ''; // Reset input
+                                    return;
+                                }
+
+                                if (file.size > maxSize) {
+                                    alert('File size must be less than 5MB.');
+                                    this.value = '';
+                                    return;
+                                }
+                            });
+                        </script>
+
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
