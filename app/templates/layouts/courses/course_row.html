@@ -1,6 +1,12 @@
-<tr data-course-id="{{ course[0] }}" data-course-name="{{course[1]}}" data-college="{{course[2]}}">
-    <td><input type="checkbox" class="row-select-checkbox"></td>
+<tr data-course-id="{{ course[0] }}"
+    data-course-name="{{ course[1] }}"
+    data-college="{{ course[2] }}">
     <td>{{course[0]}}</td>
     <td>{{course[1]}}</td>
     <td>{{course[2]}}</td>
+    <!-- add a class to the td -->
+    <td class="actions">
+        <button class="btn btn-sm btn-warning edit-btn" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
+        <button class="btn btn-sm btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+    </td>
 </tr>

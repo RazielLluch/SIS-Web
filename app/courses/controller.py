@@ -1,3 +1,5 @@
+from math import ceil
+
 from flask import render_template, redirect, request, jsonify, url_for, flash
 from . import courses_bp
 from ..models.course_model import CourseModel
@@ -7,7 +9,33 @@ course_model = CourseModel()
 
 @courses_bp.route('/courses')
 def index():
-    return render_template('layouts/courses/courses.html', title="Courses", courses=course_model.fetch_all())
+
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
+
+    per_page = 25
+
+    if search:
+        total_count = course_model.count_filtered(search)
+        courses = course_model.fetch_filtered_paginated(search, page, per_page)
+    else:
+        total_count = course_model.count_all()
+        courses = course_model.fetch_paginated(page, per_page)
+
+    total_pages = ceil(total_count / per_page)
+
+    if page > total_pages and total_pages > 0:
+        return redirect(url_for('courses.index', page=1, search=search))
+
+    return render_template(
+        'layouts/courses/courses.html',
+        courses=courses,
+        page=page,
+        total_pages=total_pages,
+        search=search
+    )
+
+    # return render_template('layouts/courses/courses.html', title="Courses", courses=course_model.fetch_all())
 
 
 @courses_bp.route('/courses/add', methods=['POST'])
