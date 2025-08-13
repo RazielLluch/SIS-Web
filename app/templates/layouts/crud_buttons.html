@@ -1,6 +1,6 @@
 <!-- Search + Add Button -->
 <div class="buttons">
-    <form method="GET" action="{{ url_for(layout_type ~ '.index') }}" class="mb-3 d-flex">
+    <form method="GET" action="{{ url_for(layout_type ~ '.index') }}" class="d-flex">
         <input type="text" name="search" class="form-control me-2" placeholder="Search {{layout_type}}..." value="{{ request.args.get('search', '') }}">
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
